@@ -1,0 +1,1 @@
+$("#reportsBtn").click();

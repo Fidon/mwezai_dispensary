@@ -1,0 +1,879 @@
+{% extends 'doctor/template.html' %}
+{% load doctor_filters %}
+{% load static %}
+{% block title %}
+  Patients | Doctor | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/doctor/patients.css' %}" rel="stylesheet" type="text/css" />
+  {% if style_link %}
+    <style>
+      #navbar div.link a.link3 {
+        background-color: #f0f0f0;
+        color: #154360;
+      }
+    </style>
+  {% else %}
+    <style>
+      #navbar div.link a.link2 {
+        background-color: #f0f0f0;
+        color: #154360;
+      }
+    </style>
+  {% endif %}
+{% endblock %}
+{% block contents %}
+  {% if results_page %}
+    <div class="patientlist pt-1">
+      <div class="tab_div table-responsive">
+        <div class="input-group my-2" id="results_input_grp">
+          <input type="text" class="form-control text-ttxt1" placeholder="Search" id="search_results_input" autocomplete="off" />
+          <button class="btn btn-ddark ms-1" type="button"><i class="fas fa-search"></i></button>
+          <button class="btn btn-success ms-1 reload_table" type="button"><i class="fas fa-refresh"></i></button>
+        </div>
+
+        <table class="table" id="table_results_list">
+          <thead class="bg-ddark text-white">
+            <tr>
+              <th>S/n</th>
+              <th>Patient Name</th>
+              <th>FileNumber</th>
+              <th>Gender</th>
+              <th>Age</th>
+              <th>Contact</th>
+            </tr>
+          </thead>
+          <tbody class="text-ttxt1">
+            {% if patient_results %}
+              {% for pat in patient_results %}
+                <tr onclick="move_to_page('{{ pat.fileNumber }}')" style="cursor:pointer;">
+                  <td class="align-middle text-nowrap">{{ forloop.counter0|add:patient_results.start_index }}</td>
+                  <td class="align-middle text-nowrap">{{ pat.fullname }}</td>
+                  <td class="align-middle text-nowrap">{{ pat.fileNumber }}</td>
+                  <td class="align-middle text-nowrap">{{ pat.gender }}</td>
+                  <td class="align-middle text-nowrap">{{ pat.age }}</td>
+                  <td class="align-middle text-nowrap">{{ pat.contact }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6" class="text-center py-3">No pending results found!</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+        <div class="paging_info d-block w-100 px-1 my-4" id="resultlist_pagination">
+          <div class="d-inline-block w-auto mt-2">Page {{ patient_results.number }} of {{ patient_results.paginator.num_pages }}</div>
+          <ul class="pagination d-inline-block w-auto float-end">
+            {% if patient_results.has_previous %}
+              <li class="page-item">
+                <button class="page-link" href="?page=1">First</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" href="?page={{ patient_results.previous_page_number }}">Prev</button>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <button class="page-link">First</button>
+              </li>
+              <li class="page-item disabled">
+                <button class="page-link">Prev</button>
+              </li>
+            {% endif %}
+            {% if patient_results.has_next %}
+              <li class="page-item">
+                <button class="page-link" href="?page={{ patient_results.next_page_number }}">Next</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" href="?page={{ patient_results.paginator.num_pages }}">Last</button>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <button class="page-link">Next</button>
+              </li>
+              <li class="page-item disabled">
+                <button class="page-link">Last</button>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  {% elif patient_page %}
+    <div class="patientDets">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#pat_details">Information</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_diagnosis">Diagnosis</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_results">Results</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_history">History</a>
+        </li>
+      </ul>
+
+      <div class="tab_container shadow-sm rounded">
+        <div id="pat_details" class="tab_div">
+          <span class="d-block w-100 float-start py-1 ps-2 border-bottom border-bblue text-bblue">Personal information</span>
+          <div class="info">
+            <span class="w-100"><b>Name:</b> &nbsp; {{ info.fullname }}</span>
+            <span><b>Gender:</b> &nbsp; {{ info.gender }}</span>
+            <span><b>Age:</b> &nbsp; {{ info.age }}</span>
+            <span><b>Contact:</b> &nbsp; {{ info.contact|f_phone }}</span>
+            <span><b>Address:</b> &nbsp; {{ info.address }}</span>
+            <span><b>Religion:</b> &nbsp; {{ info.religion }}</span>
+            <span><b>Marital status:</b> &nbsp; {{ info.marital }}</span>
+            <span class="w-100"><b>Occupation</b>: &nbsp; {{ info.occupation }}</span>
+            <span class="w-100"><b>Comment</b>: &nbsp; {{ info.comment|linebreaks }}</span>
+          </div>
+
+          <span class="d-block w-100 float-start py-1 ps-2 mt-3 border-bottom border-bblue text-bblue">Vitals information</span>
+          <div class="info">
+            {% if info.vital_data %}
+              {% for vital in info.vital_data %}
+                <span class="text-bblue"><b>Update date:</b> &nbsp; {{ vital.dates }}</span>
+                <span><b>Blood pressure:</b> &nbsp; {{ vital.bp }}</span>
+                <span><b>Heart rate:</b> &nbsp; {{ vital.hr }}</span>
+                <span><b>Saturation:</b> &nbsp; {{ vital.sat }}</span>
+                <span><b>Weight:</b> &nbsp; {{ vital.weight }}</span>
+                <span><b>Temperature:</b> &nbsp; {{ vital.temp|safe }}</span>
+                <span class="w-100 mt-1"></span>
+              {% endfor %}
+            {% endif %}
+
+            <span class="w-100 mb-2 border-bottom"></span>
+            <span><b>Comment:</b> &nbsp; {{ info.comment|linebreaks }}</span>
+          </div>
+        </div>
+        <div id="pat_diagnosis" class="tab_div">
+          <form class="mb-2" autocomplete="off" id="patientDiagnosisForm">
+            <div class="form-floating w-100 d-none float-start" id="diagnosisFormsms"></div>
+            <span class="heading">Chief complaint</span>
+            <div class="form-floating w-100">
+              <textarea class="form-control text-ttxt1 chief" id="pat_oldcarts" name="text" placeholder="." required></textarea>
+              <label for="pat_oldcarts">History of present illness (OLDCARTS)</label>
+            </div>
+
+            <span class="heading mt-3 py-2 bg-bblue text-white rounded" onclick="open_section(this)">Review of systems</span>
+            <span class="sectionWrapper w-100 float-start">
+              <div class="form-floating mg15">
+                <input type="text" class="form-control text-ttxt1" id="pat_constit" placeholder="." />
+                <label for="pat_constit">Constitutional</label>
+              </div>
+              <div class="form-floating">
+                <input type="text" class="form-control text-ttxt1" id="pat_heent" placeholder="." />
+                <label for="pat_heent">HEENT</label>
+              </div>
+              <div class="form-floating mg15">
+                <input type="text" class="form-control text-ttxt1" id="pat_skin_breast" placeholder="." />
+                <label for="pat_skin_breast">Skin/breast</label>
+              </div>
+              <div class="form-floating">
+                <input type="text" class="form-control text-ttxt1" id="pat_cardio" placeholder="." />
+                <label for="pat_cardio">Cardiovascular</label>
+              </div>
+              <div class="form-floating mg15">
+                <input type="text" class="form-control text-ttxt1" id="pat_pulmonary" placeholder="." />
+                <label for="pat_pulmonary">Pulmonary</label>
+              </div>
+              <div class="form-floating">
+                <input type="text" class="form-control text-ttxt1" id="pat_endocrine" placeholder="." />
+                <label for="pat_endocrine">Endocrine</label>
+              </div>
+              <div class="form-floating mg15">
+                <input type="text" class="form-control text-ttxt1" id="pat_gastro" placeholder="." />
+                <label for="pat_gastro">Gastro Intestinal</label>
+              </div>
+              <div class="form-floating">
+                <input type="text" class="form-control text-ttxt1" id="pat_genitourinary" placeholder="." />
+                <label for="pat_genitourinary">Genitourinary</label>
+              </div>
+              <div class="form-floating mg15">
+                <input type="text" class="form-control text-ttxt1" id="pat_musculoskeletal" placeholder="." />
+                <label for="pat_musculoskeletal">Musculoskeletal</label>
+              </div>
+              <div class="form-floating">
+                <input type="text" class="form-control text-ttxt1" id="pat_neurologic" placeholder="." />
+                <label for="pat_neurologic">Neurologic</label>
+              </div>
+              <div class="form-floating mg15">
+                <input type="text" class="form-control text-ttxt1" id="pat_heme_lymph" placeholder="." />
+                <label for="pat_heme_lymph">Heme/Lymph</label>
+              </div>
+              <div class="form-floating">
+                <input type="text" class="form-control text-ttxt1" id="pat_psychology" placeholder="." />
+                <label for="pat_psychology">Psychology</label>
+              </div>
+            </span>
+
+            <span class="heading mt-3 py-2 bg-bblue text-white rounded" onclick="open_section(this)">Patient health history</span>
+            <span class="sectionWrapper w-100 float-start">
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pat_pmh" name="text" placeholder="."></textarea>
+                <label for="pat_pmh">Patient medical history (PMH)</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pat_psh" name="text" placeholder="."></textarea>
+                <label for="pat_psh">Patient surgical history (PSH)</label>
+              </div>
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pat_meds" name="text" placeholder="."></textarea>
+                <label for="pat_meds">Meds</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pat_allergies" name="text" placeholder="."></textarea>
+                <label for="pat_allergies">Allergies</label>
+              </div>
+            </span>
+
+            <span class="heading mt-3 py-2 bg-bblue text-white rounded" onclick="open_section(this)">Family & social medical history</span>
+            <span class="sectionWrapper w-100 float-start">
+              <div class="form-floating w-100">
+                <textarea class="form-control text-ttxt1" id="pat_hist_family" placeholder="."></textarea>
+                <label for="pat_hist_family">Family & social history</label>
+              </div>
+              <div class="form-floating w-100">
+                <textarea class="form-control text-ttxt1" id="pat_hist_drugs" placeholder="."></textarea>
+                <label for="pat_hist_drugs">Drug use</label>
+              </div>
+            </span>
+
+            <span class="heading mt-3 py-2 bg-bblue text-white rounded" onclick="open_section(this)">Physical examination</span>
+            <span class="sectionWrapper w-100 float-start">
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pe_general" name="text" placeholder="."></textarea>
+                <label for="pe_general">General</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pe_eyes" name="text" placeholder="."></textarea>
+                <label for="pe_eyes">Eyes</label>
+              </div>
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pe_ent" name="text" placeholder="."></textarea>
+                <label for="pe_ent">ENT</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pe_neck" name="text" placeholder="."></textarea>
+                <label for="pe_neck">Neck</label>
+              </div>
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pe_lymph" name="text" placeholder="."></textarea>
+                <label for="pe_lymph">Lymph Nodes</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pe_cardiovascular" name="text" placeholder="."></textarea>
+                <label for="pe_cardiovascular">Cardiovascular</label>
+              </div>
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pe_lungs" name="text" placeholder="."></textarea>
+                <label for="pe_lungs">Lungs</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pe_skin" name="text" placeholder="."></textarea>
+                <label for="pe_skin">Skin</label>
+              </div>
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pe_breast" name="text" placeholder="."></textarea>
+                <label for="pe_breast">Breast</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pe_abdomen" name="text" placeholder="."></textarea>
+                <label for="pe_abdomen">Abdomen</label>
+              </div>
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pe_genitourinary" name="text" placeholder="."></textarea>
+                <label for="pe_genitourinary">Genitourinary</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pe_rectal" name="text" placeholder="."></textarea>
+                <label for="pe_rectal">Rectal</label>
+              </div>
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pe_extreme" name="text" placeholder="."></textarea>
+                <label for="pe_extreme">Extremities</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pe_musculoskeletal" name="text" placeholder="."></textarea>
+                <label for="pe_musculoskeletal">Musculoskeletal</label>
+              </div>
+              <div class="form-floating mg15">
+                <textarea class="form-control text-ttxt1" id="pe_neuro" name="text" placeholder="."></textarea>
+                <label for="pe_neuro">Neurological</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control text-ttxt1" id="pe_psychiatry" name="text" placeholder="."></textarea>
+                <label for="pe_psychiatry">Psychiatry</label>
+              </div>
+            </span>
+
+            <span class="heading mt-3 py-2 bg-bblue text-white rounded" onclick="open_section(this)">Provisional diagnosis</span>
+            <span class="sectionWrapper w-100 float-start">
+              <div class="p-1 shadow-sm" id="icd_wrapper">
+                <div class="input-group mb-1">
+                  <input type="text" id="icd_search" class="form-control text-ttxt1" placeholder="Search.." />
+                </div>
+                <div class="codes_div rounded" id="icd_codes_data">
+                  {% for icd in icd_codes %}
+                    <span class="rounded">{{ icd.code }}: {{ icd.describe }}</span>
+                  {% endfor %}
+                  <span class="searching">Searching..<i class="fas fa-spinner fa-pulse"></i></span>
+                </div>
+                <span class="selected_heading">Seleted ICD codes..</span>
+                <div class="selected_codes" id="selected_icd_codes"></div>
+              </div>
+            </span>
+
+            <div class="form-floating mt-3 w-100">
+              <textarea class="form-control text-ttxt1 chief" id="pe_assessment" name="text" placeholder="." required></textarea>
+              <label for="pe_assessment">Assessment</label>
+            </div>
+
+            <span class="heading mt-3 py-2 bg-bblue text-white rounded" onclick="open_section(this)">Plan</span>
+            <span class="sectionWrapper w-100 float-start">
+              <div class="form-floating w-100">
+                <select class="form-select text-ttxt1" name="service" id="selectService">
+                  <option value="">--select plan--</option>
+                  {% comment %} <option value="1">Doctor consultation</option> {% endcomment %}
+                  <option value="2">Procedure</option>
+                  <option value="3">Ultrasound</option>
+                  <option value="4">Labolatory</option>
+                  <option value="5">Pharmacy</option>
+                </select>
+                <label class="form-label">Select plan</label>
+              </div>
+              <div class="form-floating w-100 dropdownSelect" id="labWrapper">
+                <span class="spn_head" onclick="slidedown('labWrapper')">Select lab test <i class="fas fa-angle-down"></i></span>
+                <div class="drop shadow-sm">
+                  <input type="text" class="text-ttxt1" onkeyup="search(this, 'lab')" placeholder="Search tests.." />
+                  <div class="contents">
+                    {% for test in labtests %}
+                      <div onclick="add_payment(11,'labolatory',this,{{ test.id }})">
+                        <span class="name">{{ test.name }}</span>
+                        <span class="price">{{ test.price|format_number }}</span>
+                      </div>
+                    {% endfor %}
+                    <span class="searching">Searching..<i class="fas fa-spinner fa-pulse"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-floating w-100 dropdownSelect" id="medsWrapper">
+                <span class="spn_head" onclick="slidedown('medsWrapper')">Select medicines <i class="fas fa-angle-down"></i></span>
+                <div class="drop shadow-sm">
+                  <input type="text" class="text-ttxt1" onkeyup="search(this, 'med')" placeholder="Search medicines.." />
+                  <div class="contents">
+                    {% for med in medicines %}
+                      <div data-bs-toggle="modal" data-bs-target="#medicineModal" id="md_{{ med.id }}">
+                        <span>{{ med.name }} ({{ med.formulation }})</span>
+                        <span class="price">{{ med.price|format_number }}</span>
+                      </div>
+                    {% endfor %}
+                    <span class="searching">Searching..<i class="fas fa-spinner fa-pulse"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-floating w-100 dropdownSelect" id="docWrapper">
+                <span class="spn_head" onclick="slidedown('docWrapper')">Select doctor <i class="fas fa-angle-down"></i></span>
+                <div class="drop shadow-sm">
+                  <input type="text" class="text-ttxt1" onkeyup="search(this, 'doc')" placeholder="Search doctors.." />
+                  <div class="contents">
+                    {% for doc in doctors %}
+                      <div onclick="add_payment(22,'doctor',this,{{ doc.id }})" data-bs-toggle="tooltip" title="{{ doc.price|format_number }}">
+                        <b class="d-none">{{ doc.price|format_number }}</b>
+                        <span class="name w73">{{ doc.full_name }}</span>
+                        <span class="price w27">{{ doc.count }}</span>
+                      </div>
+                    {% endfor %}
+                    <span class="searching">Searching..<i class="fas fa-spinner fa-pulse"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-floating w-100 dropdownSelect" id="ultraWrapper">
+                <span class="spn_head" onclick="slidedown('ultraWrapper')">Select ultrasound test <i class="fas fa-angle-down"></i></span>
+                <div class="drop shadow-sm">
+                  <input type="text" class="text-ttxt1" onkeyup="search(this, 'ult')" placeholder="Search ultrsound tests.." />
+                  <div class="contents">
+                    {% for us in ultrasound %}
+                      <div onclick="add_payment(33,'ultrasound',this,{{ us.id }})">
+                        <span class="name">{{ us.name }}</span>
+                        <span class="price">{{ us.price|format_number }}</span>
+                      </div>
+                    {% endfor %}
+                    <span class="searching">Searching..<i class="fas fa-spinner fa-pulse"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-floating w-100 dropdownSelect w96" id="procedureWrapper">
+                <span class="spn_head" onclick="slidedown('procedureWrapper')">Select procedure <i class="fas fa-angle-down"></i></span>
+                <div class="drop shadow-sm">
+                  <input type="text" class="text-ttxt1" onkeyup="search(this, 'pro')" placeholder="Search procedures.." />
+                  <div class="contents">
+                    {% for pro in procedures %}
+                      <div onclick="add_payment(44,'procedure',this,{{ pro.id }})">
+                        <span class="name">{{ pro.name }}</span>
+                        <span class="price">{{ pro.price|format_number }}</span>
+                      </div>
+                    {% endfor %}
+                    <span class="searching">Searching..<i class="fas fa-spinner fa-pulse"></i></span>
+                  </div>
+                </div>
+              </div>
+
+              <span class="d-block w-100 float-start py-1 ps-2 mb-1 mt-2 border-bottom border-bblue text-bblue">Listed plans</span>
+              <div class="pay_list shadow-sm rounded">
+                <div class="totalcost mt-2">
+                  <b>Total amount: &nbsp; <span>0</span> TZS</b>
+                </div>
+              </div>
+            </span>
+            <div class="form-floating w-100 text-end">
+              <input type="hidden" id="patientFnumber" value="{{ info.id }}" />
+              <button type="submit" class="btn btn-lg btn-success" id="diagnosis_sub_btn">Submit</button>
+            </div>
+          </form>
+
+          {% comment %}prescription details{% endcomment %}
+          <div class="modal fade" id="medicineModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h3 class="modal-title text-ttxt1">Prescription details</h3>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form class="modal-body" autocomplete="off">
+                  <div class="form-floating w-100" id="message_divbox">
+                    <span class="alert alert-danger d-block m-0 py-2" style="font-size:13px;"></span>
+                  </div>
+                  <div class="form-floating w-100">
+                    <input type="text" class="form-control text-ttxt1" id="md_name" placeholder="m" readonly />
+                    <label for="md_name">Medicine name</label>
+                  </div>
+                  <div class="form-floating w50 mg2">
+                    <select class="form-select text-ttxt1" name="formulation" id="md_formula" disabled>
+                      <option value="">--formulation--</option>
+                      <option value="Tablet">Tablet</option>
+                      <option value="Suppository">Suppository</option>
+                      <option value="Pessary">Pessary</option>
+                      <option value="Injection">Injection</option>
+                      <option value="Syrup">Syrup</option>
+                      <option value="Others">Others</option>
+                    </select>
+                    <label class="form-label" for="md_formula">Select formulation..</label>
+                  </div>
+                  <div class="form-floating w50">
+                    <input type="text" class="form-control text-ttxt1" id="md_qty" placeholder="m" />
+                    <label for="md_qty">Quantity</label>
+                  </div>
+                  <div class="form-floating w-100">
+                    <textarea class="form-control text-ttxt1" id="md_dosage" placeholder="m" style="min-height:110px;" required></textarea>
+                    <label for="md_dosage">Dosage description</label>
+                  </div>
+                  <div class="form-floating p-2">
+                    Available in stock: <span id="mdStock"></span><br />
+                    Total cost: <span id="mdPrice"></span> x <span id="mdQuant">1</span> = <span id="mdTotal"></span>
+                  </div>
+                </form>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-lg btn-danger d-inline-block me-3" data-bs-dismiss="modal" id="med_cancel_btn"><i class="fas fa-arrow-circle-left"></i></button>
+                  <button type="button" class="btn btn-lg btn-success d-inline-block" data-bs-dismiss="modal" id="med_okay_btn">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="pat_results" class="tab_div">
+          <span class="d-block w-100 float-start py-1 ps-2 border-bottom border-bblue text-bblue">Unread test results</span>
+          <div class="results_div" id="unread_list_div">
+            {% if pending_results %}
+              {% for pend in pending_results %}
+                <div class="d-block w-100 float-start" style="margin-bottom: 4px;">
+                  <span class="head" id="result{{ pend.id }}">{{ pend.dept }}: {{ pend.test }} - {{ pend.dates }} <i class="fas fa-angle-down"></i></span>
+                  <div class="details shadow-sm"></div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="d-block w-100 float-start text-center py-5">No unread test results!</div>
+            {% endif %}
+          </div>
+          <div class="paging_info d-block w-100 float-start px-1 mt-5" id="pendlist_pagenation">
+            <div class="d-inline-block w-auto mt-2">Page {{ pending_results.number }} of {{ pending_results.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end">
+              {% if pending_results.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?pd=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?pd={{ pending_results.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if pending_results.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?pd={{ pending_results.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?pd={{ pending_results.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+
+          <span class="d-block w-100 float-start mt-3 py-1 ps-2 border-bottom border-bblue text-bblue">Recent test results</span>
+          <div class="results_div" id="seen_list_div">
+            {% if seen_results %}
+              {% for seen in seen_results %}
+                <div class="d-block w-100 float-start" style="margin-bottom: 4px;">
+                  <span class="head" id="result{{ seen.id }}">{{ seen.dept }}: {{ seen.test }} - {{ seen.dates }} <i class="fas fa-angle-down"></i></span>
+                  <div class="details shadow-sm"></div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="d-block w-100 float-start text-center py-5">No recent test results!</div>
+            {% endif %}
+          </div>
+          <div class="paging_info d-block w-100 float-start px-1 mt-5" id="seenlist_pagenation">
+            <div class="d-inline-block w-auto mt-2">Page {{ seen_results.number }} of {{ seen_results.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end">
+              {% if seen_results.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?ps=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?ps={{ seen_results.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if seen_results.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?ps={{ seen_results.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?ps={{ seen_results.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+
+          <span class="d-block w-100 float-start mt-3 py-1 ps-2 border-bottom border-bblue text-bblue">Pharmacy results/history</span>
+          <div class="results_div table-responsive">
+            <table class="table w-100" id="table_pharmacy">
+              <thead class="bg-ddark text-white">
+                <tr>
+                  <th>S/n</th>
+                  <th>Dates</th>
+                  <th>Prescriber</th>
+                  <th>Medicine</th>
+                  <th>Formulation</th>
+                  <th>Price</th>
+                  <th>Qty</th>
+                  <th>Cost</th>
+                  <th>Dosage</th>
+                  <th>Server</th>
+                </tr>
+              </thead>
+              <tbody class="text-ttxt1">
+                {% if pharmacy_results %}
+                  {% for hist in pharmacy_results %}
+                    <tr>
+                      <td class="align-middle text-nowrap text-center">{{ forloop.counter0|add:pharmacy_results.start_index }}</td>
+                      <td class="align-middle text-nowrap">{{ hist.dates }}</td>
+                      <td class="align-middle text-start text-nowrap">{{ hist.prescribed_by }}</td>
+                      <td class="align-middle text-start text-nowrap">{{ hist.med_name }}</td>
+                      <td class="align-middle text-start">{{ hist.med_formulation }}</td>
+                      <td class="align-middle text-end">{{ hist.med_price }}</td>
+                      <td class="align-middle">{{ hist.med_qty }}</td>
+                      <td class="align-middle text-end">{{ hist.med_cost }}</td>
+                      <td class="align-middle text-start text-nowrap">{{ hist.med_dosage }}</td>
+                      <td class="align-middle text-start text-nowrap">{{ hist.med_server }}</td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="10" class="text-center py-3">No pharmacy history found!</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+          <div class="paging_info d-block w-100 float-start px-1 mt-5" id="pharmacylist_pagenation">
+            <div class="d-inline-block w-auto mt-2">Page {{ pharmacy_results.number }} of {{ pharmacy_results.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end">
+              {% if pharmacy_results.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?pc=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?pc={{ pharmacy_results.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if pharmacy_results.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?pc={{ pharmacy_results.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?pc={{ pharmacy_results.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+        <div id="pat_history" class="tab_div">
+          <input type="hidden" value="{{ patient }}" id="patient_file_number" />
+          <div class="results_div">
+            {% if history %}
+              {% for hist in history %}
+                <div class="d-block w-100 float-start mb-1">
+                  <span class="head" id="{{ hist }}">{{ hist }} <i class="fas fa-angle-down"></i></span>
+                  <div class="details shadow-sm"></div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="w-100 py-5 text-center">No any recent history found!</div>
+            {% endif %}
+          </div>
+          <div class="paging_info d-block w-100 float-start px-1 mt-5">
+            <div class="d-inline-block w-auto mt-2">Page {{ history.number }} of {{ history.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="histlist_pagenation">
+              {% if history.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?ph=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?ph={{ history.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if history.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?ph={{ history.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?ph={{ history.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="patientlist">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#pat_waiting">Waiting patients ({{ doc_wait_count }})</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_allpatients">All patients</a>
+        </li>
+      </ul>
+
+      <div class="tab_container shadow-sm rounded">
+        <div id="pat_waiting" class="tab_div table-responsive">
+          <div class="input-group my-2">
+            <input type="text" class="form-control text-ttxt1" placeholder="Search" id="search_waiting" autocomplete="off" />
+            <button class="btn btn-ddark ms-1" type="button"><i class="fas fa-search"></i></button>
+            <button class="btn btn-success ms-1 reload_table" type="button"><i class="fas fa-refresh"></i></button>
+          </div>
+
+          <table class="table">
+            <thead class="bg-ddark text-white">
+              <tr>
+                <th>S/n</th>
+                <th>Patient Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody class="text-ttxt1">
+              {% if patients_waiting %}
+                {% for pat in patients_waiting %}
+                  <tr onclick="move_to_page('{{ pat.fileNumber }}')" style="cursor:pointer;">
+                    <td class="align-middle text-nowrap">{{ forloop.counter0|add:patients_waiting.start_index }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.fullname }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.gender }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.age }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.contact }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center py-3">No waiting patients found!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+
+          <div class="paging_info d-block w-100 px-1 my-4">
+            <div class="d-inline-block w-auto mt-2">Page {{ patients_waiting.number }} of {{ patients_waiting.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="waitlist_pagenation">
+              {% if patients_waiting.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if patients_waiting.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+
+        <div id="pat_allpatients" class="tab_div table-responsive">
+          <div class="input-group my-2">
+            <input type="text" class="form-control text-ttxt1" placeholder="Search" id="search_allpatients" autocomplete="off" />
+            <button class="btn btn-ddark ms-1" type="button"><i class="fas fa-search"></i></button>
+            <button class="btn btn-success ms-1 reload_table" type="button"><i class="fas fa-refresh"></i></button>
+          </div>
+
+          <table class="table">
+            <thead class="bg-ddark text-white">
+              <tr>
+                <th>S/n</th>
+                <th>Patient Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody class="text-ttxt1">
+              {% if patients_all %}
+                {% for pat in patients_all %}
+                  <tr onclick="move_to_page('{{ pat.fileNumber }}')" style="cursor:pointer;">
+                    <td class="align-middle text-nowrap">{{ forloop.counter0|add:patients_all.start_index }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.fullname }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.gender }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.age }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.contact }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center py-3">No patients found!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+
+          <div class="paging_info d-block w-100 px-1 my-4">
+            <div class="d-inline-block w-auto mt-2">Page {{ patients_all.number }} of {{ patients_all.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="waitlist_pagenation">
+              {% if patients_all.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if patients_all.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/doctor/patients.js' %}"></script>
+{% endblock %}

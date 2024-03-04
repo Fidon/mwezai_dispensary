@@ -1,0 +1,411 @@
+/* #navbar div.link a.link2 {
+    background-color: #F0F0F0;
+    color: #154360;
+} */
+
+
+#container .patientlist,
+#container .patientDets {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 0 5px;
+    color: #696969;
+}
+#container .patientlist a,
+#container .patientDets a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+
+#container .patientDets ul,
+#container .patientlist ul {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    background-color: rgba(212,212,255,.5);
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-size: 0;
+}
+#container .patientDets ul li,
+#container .patientlist ul li {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 0;
+}
+#container .patientDets ul li a,
+#container .patientlist ul li a {
+    display: block;
+    width: auto;
+    min-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    padding: 8px 15px;
+    
+}
+#container .tab_container {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 5px 10px;
+}
+#container .tab_container .tab_div {
+    display: none;
+    width: 100%;
+    float: left;
+    padding: 0;
+}
+#container .tab_container .tab_div:nth-child(1) {
+    display: block;
+}
+#container .tab_container .tab_div .info {
+    display: block;
+    width: 100%;
+    float: left;
+    font-size: 0;
+}
+#container .tab_container .tab_div .info span {
+    display: inline-block;
+    width: 50%;
+    padding: 3px 0;
+    font-size: 15px;
+}
+#container .tab_container .tab_div .results_div {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 5px 0;
+    max-height: 500px;
+    color: #696969;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#container .tab_container .tab_div .results_div .head {
+    display: block;
+    width: 100%;
+    float: left;
+    border: 1px solid rgba(66, 139, 202, .5);
+    padding: 8px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .5s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+#container .tab_container .tab_div .results_div .head i {
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    font-size: 16px;
+}
+#container .tab_container .tab_div .results_div .head:hover {
+    background-color: #428BCA;
+    color: #FFFFFF;
+}
+#container .tab_container .tab_div .results_div .details {
+    display: none;
+    width: 100%;
+    float: left;
+    min-height: 150px;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    border-left: 1px solid rgba(66, 139, 202, .5);
+}
+
+
+#container .patientlist .form-control:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#container .tab_container .pagination button,
+#container .patientlist .pagination button {
+    color: #154360;
+    border: 1px solid rgba(66,139,202, 0.6);
+    cursor: pointer;
+}
+#container .tab_container .pagination button:hover,
+#container .patientlist .pagination button:hover,
+#container .tab_container .pagination button:focus
+#container .patientlist .pagination button:focus {
+    background-color: #428BCA;
+    color: white;
+}
+#container .tab_container .pagination li.disabled,
+#container .tab_container .pagination li.disabled button,
+#container .patientlist .pagination li.disabled,
+#container .patientlist .pagination li.disabled button {
+    cursor: not-allowed;
+}
+
+#container .patientDets .tab_container .tab_div form {
+    display: block;
+    width: 100%;
+    float: left;
+    font-size: 0;
+    color: #696969;
+}
+#container .patientDets .tab_container .tab_div form .sectionWrapper {
+    display: none;
+}
+#container .patientDets .tab_container .tab_div form span.heading {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 1px 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #428BCA;
+    color: #428BCA;
+    font-size: 15px;
+}
+#container .patientDets .tab_container .tab_div form .form-floating {
+    float: left;
+    width: 49.25%;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+#container .patientDets .tab_container .tab_div form .mg15 {
+    margin-right: 1.5%;
+}
+#container .patientDets .tab_container form .form-control:focus,
+#container .patientDets .tab_container form .form-select:focus,
+#container form .dropdownSelect .drop input:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#container .patientDets .tab_container form textarea.chief {
+    min-height: 120px;
+}
+
+#icd_wrapper,
+#icd_wrapper .codes_div,
+#icd_wrapper .codes_div span,
+#icd_wrapper .selected_heading,
+#icd_wrapper .selected_codes {
+    display: block;
+    float: left;
+    width: 100%;
+}
+#icd_wrapper .codes_div {
+    position: relative;
+    max-height: 250px;
+    overflow: auto;
+    border-left: 1px solid rgba(66, 139, 202, .5);
+    border-bottom: 1px solid rgba(66, 139, 202, .5);
+}
+#icd_wrapper .codes_div span {
+    padding: 8px 5px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all .5s ease;
+}
+#icd_wrapper .codes_div span:hover {
+    background-color: #428BCA;
+    color: #FFFFFF;
+    white-space: normal;
+    overflow: auto;
+}
+#icd_wrapper .selected_heading {
+    border-bottom: 1px solid #696969;
+    font-size: 15px;
+    padding-left: 5px;
+    margin-top: 10px;
+}
+#icd_wrapper .selected_codes {
+    padding: 5px;
+    font-size: 14px;
+}
+
+
+
+
+#medicineModal form {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 0 5px;
+}
+#medicineModal form .form-floating {
+    display: block;
+    width: 100%;
+    float: left;
+    margin: 3px 0;
+    position: relative;
+    color: #696969;
+}
+#medicineModal form .w50 {
+    width: 49.25%;
+}
+#medicineModal form .mg2 {
+    margin-right: 1.5%;
+}
+#medicineModal form .form-control:focus,
+#medicineModal form .form-select:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+
+
+/* dropdowns for items in the service selected */
+#container form .dropdownSelect {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    display: none;
+}
+#container form .dropdownSelect .spn_head {
+    display: block;
+    width: 100%;
+    cursor: default;
+    font-size: 15px;
+    padding: 12px 14px;
+}
+#container form .dropdownSelect .spn_head i {
+    float: right;
+    position: relative;
+    bottom: -1px;
+}
+#container form .dropdownSelect .drop {
+    display: none;
+    float: left;
+    width: 100%;
+    padding: 0 14px;
+}
+#container form .dropdownSelect .drop input,
+#icd_wrapper input {
+    display: block;
+    width: 100%;
+    height: 40px;
+    float: left;
+    padding: 0 7px;
+    margin-bottom: 5px;
+    outline: none;
+    border: 1px solid #428BCA;
+    border-radius: 5px;
+}
+#container form .dropdownSelect .drop .contents {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 5px 0;
+    height: auto;
+    max-height: 250px;
+    overflow-y: auto;
+}
+#container form .dropdownSelect .drop .contents .searching,
+#icd_wrapper .codes_div .searching {
+    display: none;
+    width: auto;
+    float: none;
+    overflow: hidden;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    font-size: 15px;
+    color: #428BCA;
+}
+#container form .dropdownSelect .drop .contents div {
+    display: block;
+    width: 100%;
+    float: left;
+    margin: 1px 0;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all .4s ease;
+}
+#container form .dropdownSelect .drop .contents div span {
+    float: left;
+    padding: 5px;
+    margin: 0;
+    width: calc(100% - 65px);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#container form .dropdownSelect .drop .contents div span.price {
+    float: right;
+    background-color: rgba(66, 139, 202, .8);
+    color: #FFFFFF;
+    width: auto;
+    max-width: 65px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#container form .dropdownSelect .drop .contents div:hover {
+    background-color: rgba(212,212,255,.7);
+}
+#container form .pay_list {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 2px 7px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+#container form .pay_list div {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 0;
+    font-size: 15px;
+}
+#container form .pay_list div:not(.totalcost) span {
+    display: inline-block;
+    width: auto;
+    padding: 2px 5px;
+    margin: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid rgba(105, 105, 105, .1);
+}
+#container form .pay_list div span i {
+    color: #FF6767;
+    cursor: pointer;
+}
+
+
+
+/* responsive breakpoints */
+@media only screen and (max-width: 769px) {
+    #container form .dropdownSelect .spn_head {
+        padding: 15px 14px;
+        font-size: 18px;
+    }
+    #container form .dropdownSelect .drop {
+        padding: 0 5px;
+        font-size: 18px;
+    }
+    #container form .dropdownSelect .drop input {
+        height: 60px;
+    }
+    #container form .dropdownSelect .drop .contents {
+        max-height: 300px;
+    }
+    #container form .dropdownSelect .drop .contents div span {
+        padding: 10px 5px;
+    }
+    #container form .pay_list div {
+        font-size: 18px;
+    }
+    #container form .pay_list div span i {
+        font-size: 20px;
+    }
+}

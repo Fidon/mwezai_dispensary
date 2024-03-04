@@ -1,0 +1,103 @@
+{% extends 'doctor/template.html' %}
+{% load reception_filters %}
+{% load static %}
+{% block title %}
+  Dashboard | Doctor | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/doctor/dash.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <div class="nameDiv d-block float-start w-100 mb-2 shadow-sm">
+    <span id="welback" class="welcome d-block w-100 float-start text-ddark">Welcome back,</span>
+    <span id="date_time" class="time d-block w-100 float-start">Date & time</span>
+  </div>
+  <span class="head d-block float-start text-ddark">Overall summary & highlights</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <a href="{% url 'patients_doc' %}">
+      <div>
+        <span class="btn_title">Waiting patients</span>
+        <span class="btn_number">{{ waiting_patients|format_number }}</span>
+      </div>
+    </a>
+    <div>
+      <span class="btn_title">Patients attended</span>
+      <span class="btn_number">{{ all_attended|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Returning patients</span>
+      <span class="btn_number">{{ returning_patients|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Unread results</span>
+      <span class="btn_number">{{ unread_results|format_number }}</span>
+    </div>
+    {% comment %} <div>
+      <span class="btn_title">Dept. revenue</span>
+      <span class="btn_number">{{ total_revenue|format_number }}</span>
+    </div> {% endcomment %}
+  </div>
+
+  <span class="head d-block float-start text-ddark">Today's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">Patients attended</span>
+      <span class="btn_number">{{ today_attended|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Returning patients</span>
+      <span class="btn_number">{{ today_returning|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Unread results</span>
+      <span class="btn_number">{{ today_results|format_number }}</span>
+    </div>
+    {% comment %} <div>
+      <span class="btn_title">Dept. revenue</span>
+      <span class="btn_number">{{ today_revenue|format_number }}</span>
+    </div> {% endcomment %}
+  </div>
+  {% comment %}
+  <span class="head d-block float-start text-ddark">Week's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">Patients attended</span>
+      <span class="btn_number">{{ week_attended|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Returning patients</span>
+      <span class="btn_number">{{ week_returning|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Unread results</span>
+      <span class="btn_number">{{ week_results|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Dept. revenue</span>
+      <span class="btn_number">{{ week_revenue|format_number }}</span>
+    </div>
+  </div>
+
+  <span class="head d-block float-start text-ddark">Month's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">Patients attended</span>
+      <span class="btn_number">{{ month_attended|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Returning patients</span>
+      <span class="btn_number">{{ month_returning|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Unread results</span>
+      <span class="btn_number">{{ month_results|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Dept. revenue</span>
+      <span class="btn_number">{{ month_revenue|format_number }}</span>
+    </div>
+  </div> {% endcomment %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/doctor/dash.js' %}"></script>
+{% endblock %}

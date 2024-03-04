@@ -1,0 +1,35 @@
+{% extends 'control/template.html' %}
+{% load static %}
+{% block title %}
+  Profile | Admin | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/control/profile.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <form class="form shadow-sm rounded" id="profile_form" action="{% url 'ad_updatepass' %}" autocomplete="off">
+    <span class="d-block w-100 float-start py-1 ps-2 mb-2 border-bottom border-bblue text-bblue"><i class="fas fa-user-lock"></i> &nbsp; Change password</span>
+    <div class="form-floating formsms" id="passFormSms"></div>
+    <div class="form-floating">
+      <input type="password" class="form-control text-ttxt1" placeholder="p" id="pass_current" required autofocus />
+      <label for="pass_current" class="text-ttxt1">Current password</label>
+      <span class="err text-danger"><i class="fas fa-exclamation-circle"></i></span>
+    </div>
+    <div class="form-floating">
+      <input type="password" class="form-control text-ttxt1" oninput="pass_length(this)" placeholder="." id="pass_newpass" required />
+      <label for="pass_newpass" class="text-ttxt1">New password</label>
+      <span class="err text-danger"><i class="fas fa-exclamation-circle"></i></span>
+    </div>
+    <div class="form-floating">
+      <input type="password" class="form-control text-ttxt1" placeholder="." id="pass_confirm" required />
+      <label for="pass_confirm" class="text-ttxt1">Confirm password</label>
+      <span class="err text-danger"><i class="fas fa-exclamation-circle"></i> Password does not match!</span>
+    </div>
+    <div class="form-floating submit">
+      <button type="submit" class="btn btn-lg btn-success" id="pass_button">Update</button>
+    </div>
+  </form>
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/control/profile.js' %}"></script>
+{% endblock %}

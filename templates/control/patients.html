@@ -1,0 +1,173 @@
+{% extends 'control/template.html' %}
+{% load static %}
+{% block title %}
+  Reception report | Admin | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/control/report_reception.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  {% if patient %}
+    <input type="hidden" id="receptionist_id" value="{{ patient }}" />
+
+    <div class="w-100 py-2 text-ttxt1 border-bottom">
+      <h5>Patients: {{ patient_info }}</h5>
+    </div>
+    <div class="d-block w-100 float-start py-1 table-responsive">
+      <table class="table text-ttxt1" id="admitted_patients_table">
+        <thead>
+          <tr class="bg-bblue text-white text-center">
+            <th>S/n</th>
+            <th>Patient names</th>
+            <th>FileNumber</th>
+            <th>Gender</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="modal fade" id="date_filter_modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-ttxt1">Dates range filter..</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-floating">
+              <input type="date" class="form-control text-ttxt1" id="min_date" placeholder="d" />
+              <label for="min_date" class="text-ttxt1">Minimum date</label>
+            </div>
+            <div class="form-floating">
+              <input type="date" class="form-control text-ttxt1" id="max_date" placeholder="d" />
+              <label for="max_date" class="text-ttxt1">Maximum date</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-long-arrow-left"></i></button>
+            <button type="button" class="btn btn-bblue text-white" id="date_clear"><i class="fas fa-refresh"></i></button>
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="date_filter_btn"><i class="fas fa-check-circle"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="reception_details_modal">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-ttxt1">Patient services: Jinala Mgonjwa</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-block w-100 float-start py-1 table-responsive">
+              <table class="table text-ttxt1" id="rec_details_table">
+                <thead>
+                  <tr class="bg-bblue text-white text-center">
+                    <th>S/n</th>
+                    <th>Dates</th>
+                    <th>ServiceName</th>
+                    <th>Cost</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="offcanvas offcanvas-start w-50" data-bs-scroll="true" id="results_offcanvas" style="z-index:1100;">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Offcanvas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div>Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.</div>
+        <div class="dropdown mt-3">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">Dropdown button</button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="#">Action</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Another action</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="input-group w-100 float-start searchdiv">
+      <input type="text" class="form-control text-ttxt1" id="global_search_input" placeholder="Search.." />
+      <a class="btn btn-bblue text-white ms-1" href=""><i class="fas fa-refresh"></i></a>
+    </div>
+    <div class="d-block w-100 float-start py-1 table-responsive">
+      <table class="table text-ttxt1" id="reception_table">
+        <thead>
+          <tr class="bg-bblue text-white text-center">
+            <th>S/n</th>
+            <th>Receptionist</th>
+            <th>New patients</th>
+            <th>Patients admitted</th>
+            <th>Revenue collected</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <th>Page-total:</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+          <tr>
+            <th>Grand-total:</th>
+            <th style="visibility:hidden"></th>
+            <th></th>
+            <th></th>
+            <th class="text-end pe-3"></th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    {% comment %}modal to filter dates{% endcomment %}
+    <div class="modal fade" id="dateFilterModal">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-ttxt1">Date range..</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-floating">
+              <input type="date" class="form-control text-ttxt1" id="min_date" placeholder="d" />
+              <label for="min_date" class="text-ttxt1">Minimum date</label>
+            </div>
+            <div class="form-floating">
+              <input type="date" class="form-control text-ttxt1" id="max_date" placeholder="d" />
+              <label for="max_date" class="text-ttxt1">Maximum date</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-long-arrow-left"></i></button>
+            <button type="button" class="btn btn-bblue text-white" id="date_filter_clear"><i class="fas fa-refresh"></i></button>
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="date_filter_btn"><i class="fas fa-check-circle"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/control/report_reception.js' %}"></script>
+{% endblock %}

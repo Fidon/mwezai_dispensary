@@ -1,0 +1,125 @@
+{% extends 'reception/template.html' %}
+{% load static %}
+{% block title %}
+  {{ title }} | Reception | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/reception/patients.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <div class="pagehead shadow-sm">{{ title }}</div>
+  {% if data.names %}
+    <input type="hidden" value="{{ data.id }}" id="up_patientID" />
+    <input type="hidden" value="{{ data.gen }}" id="up_gender" />
+    <input type="hidden" value="{{ data.rel }}" id="up_religion" />
+    <input type="hidden" value="{{ data.mar }}" id="up_marital" />
+  {% endif %}
+  <form id="newpatientForm" class="form shadow-sm rounded" action="{% url 'reg_patient' %}" autocomplete="off">
+    <div class="formsms w96 my-0 mx-auto" id="pat_formsms"></div>
+    <div class="form-floating w96">
+      <select class="form-select text-ttxt1" name="service" id="chooseService" required>
+        <option value="">Service</option>
+        {% for item in data.dept %}
+          {% if item.name == 'Doctor' %}
+            <option value="{{ item.id }}">Doctor Consultation</option>
+          {% else %}
+            <option value="{{ item.id }}">{{ item.name }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      <label class="form-label">Select service required..</label>
+    </div>
+    <div class="separator d-block float-start w-100 my-2"></div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" placeholder="." id="pat_fname" value="{{ data.names }}" required />
+      <label for="pat_fname">Full name</label>
+      <span class="tooltiptext" id="err_fname"></span>
+    </div>
+    <div class="form-floating">
+      <input type="date" class="form-control text-ttxt1" placeholder="." value="{{ data.bdate|date:'Y-m-d' }}" id="pat_bdate" max="{% now 'Y-m-d' %}" required />
+      <label for="pat_bdate">Birth date</label>
+      <span class="tooltiptext"></span>
+    </div>
+    <div class="form-floating radiodiv rounded" id="gender_radio_div">
+      <span class="inputTitle">Select gender</span>
+      <input type="radio" value="Male" name="gender" required /> <span class="radio_txt">Male</span> &nbsp;<input type="radio" value="Female" name="gender" required /> <span class="radio_txt">Female</span>
+    </div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" placeholder="." id="pat_address" value="{{ data.addr }}" required />
+      <label for="pat_address">Address</label>
+      <span class="tooltiptext">Invalid address</span>
+    </div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" placeholder="." id="pat_contact" value="{{ data.cont }}" oninput="validPhone(this)" required />
+      <label for="pat_contact">Contact</label>
+      <span class="tooltiptext"></span>
+    </div>
+    <span id="inputsWrapper"></span>
+    <div class="separator d-block float-start w-100 my-2"></div>
+    <div class="form-floating w96">
+      <textarea class="form-control text-ttxt1 txtarea" placeholder="c" id="pat_comment">{{ data.ct }}</textarea>
+      <label for="pat_comment">Add comment (optional)</label>
+    </div>
+    <div class="separator d-block float-start w-100 my-2"></div>
+    <div class="form-floating submit text-end w96">
+      {% if data.names %}
+        <button type="submit" class="btn btn-lg btn-success" id="pat_register_btn">Update</button>
+      {% else %}
+        <button type="submit" class="btn btn-lg btn-success" id="pat_register_btn">Register</button>
+      {% endif %}
+    </div>
+  </form>
+
+  {% comment %}form variations based on service{% endcomment %}
+  <span id="formInputsHolder" class="d-none">
+    <div class="form-floating">
+      <select class="form-select text-ttxt1" id="pat_religion" required>
+        <option value="">Religion</option>
+        <option value="Islamic">Islamic</option>
+        <option value="Christian">Christian</option>
+        <option value="Others">Others</option>
+      </select>
+      <label class="form-label" for="pat_religion">Select religion..</label>
+    </div>
+    <div class="form-floating">
+      <select class="form-select text-ttxt1" id="pat_marital" required>
+        <option value="">Marital status</option>
+        <option value="Single">Single</option>
+        <option value="Married">Married</option>
+        <option value="Widowed">Widowed</option>
+        <option value="Divorced">Divorced</option>
+        <option value="Separated">Separated</option>
+      </select>
+      <label class="form-label" for="pat_marital">Select marital status..</label>
+    </div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" value="{{ data.occu }}" placeholder="o" id="pat_occupation" />
+      <label for="pat_occupation">Occupation</label>
+    </div>
+    <div class="separator d-block float-start w-100 my-2"></div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" value="{{ data.bp }}" placeholder="b" id="pat_bp" required />
+      <label for="pat_bp">Blood pressure in mmHg</label>
+      <span class="tooltiptext"></span>
+    </div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" value="{{ data.temp }}" placeholder="temp" oninput="validNum(this)" id="pat_temp" required />
+      <label for="pat_temp">Temperature in &deg;C</label>
+    </div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" value="{{ data.hr }}" placeholder="hr" oninput="validNum(this)" id="pat_hrate" required />
+      <label for="pat_hrate">Heart rate in b/min</label>
+    </div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" value="{{ data.weight }}" placeholder="wt" oninput="validNum(this)" id="pat_weight" required />
+      <label for="pat_weight">Weight in kg</label>
+    </div>
+    <div class="form-floating">
+      <input type="text" class="form-control text-ttxt1" value="{{ data.sat }}" placeholder="sat" oninput="validNum(this)" id="pat_sat" required />
+      <label for="pat_sat">Saturation in %</label>
+    </div>
+  </span>
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/reception/patients.js' %}"></script>
+{% endblock %}

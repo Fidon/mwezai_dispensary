@@ -1,0 +1,87 @@
+#navbar div.link a.link4 {
+    background-color: #F0F0F0;
+    color: #154360;
+}
+
+
+#container .patients {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 0;
+    color: #696969;
+}
+#container .patients a {
+    color: inherit;
+    text-decoration: none;
+}
+#container .patients ul {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    background-color: rgba(212,212,255,.5);
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-size: 0;
+}
+#container .patients ul li {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 0;
+}
+#container .patients ul li a {
+    display: block;
+    width: auto;
+    min-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    padding: 8px 15px;
+    
+}
+#container .patients .tab_container {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 5px 0;
+}
+#container .patients .tab_container .form-control:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#container .patients .tab_container .pagination button {
+    color: #154360;
+    border: 1px solid rgba(66,139,202, 0.6);
+    cursor: pointer;
+}
+#container .patients .tab_container .pagination button:hover,
+#container .patients .tab_container .pagination button:focus {
+    background-color: #428BCA;
+    color: white;
+}
+
+#container .patients .tab_container .pagination li.disabled,
+#container .patients .tab_container .pagination li.disabled button {
+    cursor: not-allowed;
+}
+#container .patients .tab_container .tab_div {
+    display: none;
+    width: 100%;
+    float: left;
+    padding: 0;
+}
+#container .patients .tab_container .tab_div:nth-child(1) {
+    display: block;
+}
+
+
+@media only screen and (max-width: 769px) {
+    #container .patients .tab_container {
+        padding: 0;
+    }
+}

@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcat icon" href="{% static 'imgs/logo.png' %}" />
+    <title>Auth | Mwezai dispensary</title>
+    <link href="{% static 'fontawesome-6.2.1/css/all.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'scss/custom.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/users/master.css' %}" rel="stylesheet" type="text/css" />
+  </head>
+  <body class="text-center d-flex align-items-center justify-content-center min-vh-100">
+    <div class="wrap d-inline-block shadow-lg rounded">
+      <img src="{% static 'imgs/mwezai_logo.png' %}" class="d-inline-block w-50" /><br />
+      <form id="loginForm" action="{% url 'us_auth' %}" autocomplete="off" class="d-inline-block w-100 mt-5">
+        <div id="auth_formsms" class="formsms text-start"></div>
+        <div class="form-floating">
+          <input type="text" class="form-control text-ttxt1" id="usname" placeholder="a" required autofocus />
+          <label for="uname" class="text-ttxt1">Username</label>
+        </div>
+        <div class="form-floating mt-2">
+          <input type="password" class="form-control text-ttxt1" id="passwd" placeholder="a" required />
+          <label for="pass1" class="text-ttxt1">Password</label>
+        </div>
+        <div class="form-floating mt-3">
+          <button type="submit" id="authBtn" class="btn btn-lg btn-success d-inline-block float-end">Login</button>
+        </div>
+      </form>
+    </div>
+    <script src="{% static 'js/jquery-3.6.1.min.js' %}"></script>
+    <script src="{% static 'js/users/auth.js' %}"></script>
+  </body>
+</html>

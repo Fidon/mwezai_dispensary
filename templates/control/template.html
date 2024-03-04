@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcat icon" href="{% static 'imgs/logo.png' %}" />
+    <title>
+      {% block title %}
+
+      {% endblock %}
+    </title>
+    <link href="{% static 'fontawesome-6.2.1/css/all.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'scss/custom.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'datatables/datatables.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/control/master.css' %}" rel="stylesheet" type="text/css" />
+    {% block styles %}
+
+    {% endblock %}
+  </head>
+  <body>
+    <div id="main">
+      <header class="shadow-sm">
+        <div class="divlogo">
+          <a href="{% url 'ad_dash' %}"><img src="{% static 'imgs/logo.png' %}" /></a>
+          <a href="{% url 'ad_dash' %}"><span class="text-ddark fw-bold">Mwezai dispensary</span></a>
+        </div>
+        <div class="divuser text-ddark">
+          {% comment %} <span><i class="fas fa-bell"></i><div class="bg-danger"></div></span> {% endcomment %}
+          <span class="menu"><i class="fas fa-bars"></i></span>
+        </div>
+      </header>
+      <div class="main_wrapper">
+        <aside id="navbar" class="bg-ddark">
+          <div class="link">
+            <a href="{% url 'ad_dash' %}" class="link1"><i class="fas fa-home"></i> &nbsp; Dashboard</a>
+          </div>
+          <div class="link">
+            <span class="linkHead" onclick="drop_menu(this, event)" id="servicesBtn"><i class="fas fa-file-text"></i> &nbsp; Services <i class="fas fa-angle-down"></i><i class="fas fa-angle-up"></i></span>
+            <div class="dp_menu">
+              <a href="{% url 'serv_doctor' %}" class="link2"><i class="fas fa-arrow-right"></i> &nbsp; Doctors</a>
+              <a href="{% url 'serv_lab' %}" class="link3"><i class="fas fa-arrow-right"></i> &nbsp; Labolatory</a>
+              <a href="{% url 'serv_sound' %}" class="link4"><i class="fas fa-arrow-right"></i> &nbsp; Ultrasound</a>
+              <a href="{% url 'serv_procedure' %}" class="link5"><i class="fas fa-arrow-right"></i> &nbsp; Procedure</a>
+              <a href="{% url 'serv_pharmacy' %}" class="link6"><i class="fas fa-arrow-right"></i> &nbsp; Pharmacy</a>
+            </div>
+          </div>
+          <div class="link">
+            <a href="{% url 'ad_users' %}" class="link7"><i class="fas fa-users"></i> &nbsp; Users</a>
+          </div>
+          <div class="link">
+            <a href="{% url 'patients_logs' %}" class="link7"><i class="fas fa-hospital-user"></i> &nbsp; Patients</a>
+          </div>
+          <div class="link">
+            <a href="{% url 'icd_codes_page' %}" class="link17"><i class="fas fa-code"></i> &nbsp; ICD-codes</a>
+          </div>
+          {% comment %} <div class="link">
+            <a href="{% url 'ad_alerts' %}" class="link8"><i class="fas fa-bell"></i> &nbsp; Alerts (8)</a>
+          </div> {% endcomment %}
+          <div class="link">
+            <a href="{% url 'ad_profile' %}" class="link9"><i class="fas fa-user"></i> &nbsp; Profile</a>
+          </div>
+          {% comment %} <div class="link">
+            <a href="{% url 'ad_patient_report' %}" class="link11"><i class="fas fa-list"></i> &nbsp; Patients report</a>
+          </div> {% endcomment %}
+          <div class="link">
+            <span class="linkHead" onclick="drop_menu(this, event)" id="reportsBtn"><i class="fas fa-file-text"></i> &nbsp; Reports <i class="fas fa-angle-down"></i><i class="fas fa-angle-up"></i></span>
+            <div class="dp_menu">
+              <a href="{% url 'ad_reception_report' %}" class="link10"><i class="fas fa-arrow-right"></i> &nbsp; Reception</a>
+              <a href="{% url 'ad_patient_report' %}" class="link11"><i class="fas fa-arrow-right"></i> &nbsp; Patients</a>
+              <a href="{% url 'ad_doctors_report' %}" class="link12"><i class="fas fa-arrow-right"></i> &nbsp; Doctors</a>
+              <a href="{% url 'ad_lab_report' %}" class="link13"><i class="fas fa-arrow-right"></i> &nbsp; Labolatory</a>
+              <a href="{% url 'ad_usound_report' %}" class="link14"><i class="fas fa-arrow-right"></i> &nbsp; Ultrasound</a>
+              <a href="{% url 'ad_pharmacy_report' %}" class="link15"><i class="fas fa-arrow-right"></i> &nbsp; Pharmacy</a>
+              <a href="{% url 'ad_procedure_report' %}" class="link16"><i class="fas fa-arrow-right"></i> &nbsp; Procedures</a>
+            </div>
+          </div>
+          <div class="link">
+            <a href="/signout" id="sign_out_btn"><i class="fas fa-sign-out"></i> &nbsp; Sign Out</a>
+          </div>
+        </aside>
+        <div class="offcanvas offcanvas-start" id="menuCanvas">
+          <div class="offcanvas-header">
+            <h1 class="offcanvas-title text-ddark">Menu..</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="menu_div offcanvas-body bg-ddark"></div>
+        </div>
+        <div id="container">
+          {% block contents %}
+
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span>&copy; 2023 - Mwezai dispensary</span>
+      <span>All rights reserved</span>
+      <span>Design by fidon_developer</span>
+    </footer>
+    <script src="{% static 'js/jquery-3.6.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap-5.3.0/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/signout.js' %}"></script>
+    <script src="{% static 'datatables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/control/master.js' %}"></script>
+    {% block scripts %}
+
+    {% endblock %}
+  </body>
+</html>

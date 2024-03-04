@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcat icon" href="{% static 'imgs/logo.png' %}" />
+    <title>
+      {% block title %}
+
+      {% endblock %}
+    </title>
+    <link href="{% static 'fontawesome-6.2.1/css/all.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'scss/custom.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'datatables/datatables.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/pharmacy/master.css' %}" rel="stylesheet" type="text/css" />
+    {% block styles %}
+
+    {% endblock %}
+  </head>
+  <body>
+    <div id="main">
+      <header class="shadow-sm">
+        <div class="divlogo">
+          <a href="{% url 'pharmacy_dash' %}"><img src="{% static 'imgs/logo.png' %}" /></a>
+          <a href="{% url 'pharmacy_dash' %}"><span class="text-ddark fw-bold">Mwezai dispensary</span></a>
+        </div>
+        <div class="divuser text-ddark">
+          <span class="d-none"><i class="fas fa-bell"></i><div class="bg-danger"></div></span>
+          <span class="menu"><i class="fas fa-bars"></i></span>
+        </div>
+      </header>
+      <div class="main_wrapper">
+        <aside id="navbar" class="bg-ddark">
+          <div class="link">
+            <a href="{% url 'pharmacy_dash' %}" class="link1"><i class="fas fa-home"></i> &nbsp; Dashboard</a>
+          </div>
+          <div class="link">
+            <a href="{% url 'medicines' %}" class="link2" id="patCount"><i class="fas fa-hospital-user"></i> &nbsp; Patients (0)</a>
+          </div>
+          <div class="link">
+            <a href="{% url 'phar_requests' %}" class="link6" id="req_count"><i class="fas fa-list"></i> &nbsp; Requests (0)</a>
+          </div>
+          <div class="link">
+            <a href="{% url 'phar_inventory' %}" class="link3"><i class="fas fa-dolly-flatbed"></i> &nbsp; Inventory</a>
+          </div>
+          {% comment %} <div class="link">
+            <a href="{% url 'phar_alerts' %}" class="link4"><i class="fas fa-bell"></i> &nbsp; Alerts (0)</a>
+          </div> {% endcomment %}
+          <div class="link">
+            <a href="{% url 'phar_profile' %}" class="link5"><i class="fas fa-user"></i> &nbsp; Profile</a>
+          </div>
+          {% if not phar_account %}
+            <div class="link">
+              <a href="{% url 'dashboard' %}" class="bg-bblue"><i class="fas fa-desktop-alt"></i> &nbsp; Reception</a>
+            </div>
+          {% endif %}
+          {% comment %} <div class="link">
+            <span class="linkHead" onclick="drop_menu(this, event)" id="reportsBtn"><i class="fas fa-file-text"></i> &nbsp; Reports <i class="fas fa-angle-down"></i><i class="fas fa-angle-up"></i></span>
+            <div class="dp_menu">
+              <a href="/pharmacy/report-patients" class="link6"><i class="fas fa-arrow-right"></i> &nbsp; Patients</a>
+              <a href="/pharmacy/report-inventory" class="link7"><i class="fas fa-arrow-right"></i> &nbsp; Inventory</a>
+            </div>
+          </div> {% endcomment %}
+          <div class="link">
+            <a href="" id="sign_out_btn"><i class="fas fa-sign-out"></i> &nbsp; Sign Out</a>
+          </div>
+        </aside>
+        <div class="offcanvas offcanvas-start" id="menuCanvas">
+          <div class="offcanvas-header">
+            <h2 class="offcanvas-title text-ddark">Menu..</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="menu_div offcanvas-body bg-ddark"></div>
+        </div>
+        <div id="container">
+          {% block contents %}
+
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span>&copy; 2023 - Mwezai dispensary</span>
+      <span>All rights reserved</span>
+      <span>Design by fidon_developer</span>
+    </footer>
+    <script src="{% static 'js/jquery-3.6.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap-5.3.0/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/signout.js' %}"></script>
+    <script src="{% static 'datatables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/pharmacy/master.js' %}"></script>
+    {% block scripts %}
+
+    {% endblock %}
+  </body>
+</html>

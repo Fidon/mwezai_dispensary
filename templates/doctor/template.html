@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcat icon" href="{% static 'imgs/logo.png' %}" />
+    <title>
+      {% block title %}
+
+      {% endblock %}
+    </title>
+    <link href="{% static 'fontawesome-6.2.1/css/all.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'scss/custom.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/doctor/master.css' %}" rel="stylesheet" type="text/css" />
+    {% block styles %}
+
+    {% endblock %}
+  </head>
+  <body>
+    <div id="main">
+      <header class="shadow-sm">
+        <div class="divlogo">
+          <a href="{% url 'doc_dash' %}"><img src="{% static 'imgs/logo.png' %}" /></a>
+          <a href="{% url 'doc_dash' %}"><span class="text-ddark fw-bold">Mwezai dispensary</span></a>
+        </div>
+        <div class="divuser text-ddark">
+          {% comment %} <span><i class="fas fa-bell"></i><div class="bg-danger"></div></span> {% endcomment %}
+          <span class="menu"><i class="fas fa-bars"></i></span>
+        </div>
+      </header>
+      <div class="main_wrapper">
+        <aside id="navbar" class="bg-ddark">
+          <div class="link">
+            <a href="{% url 'doc_dash' %}" class="link1"><i class="fas fa-home"></i> &nbsp; Dashboard</a>
+          </div>
+          <div class="link">
+            <a href="{% url 'patients_doc' %}" class="link2" id="patCount"><i class="fas fa-hospital-user"></i> &nbsp; Patients (0)</a>
+          </div>
+          <div class="link">
+            <a href="{% url 'doc_results' %}" class="link3" id="results_count"><i class="fas fa-user"></i> &nbsp; Results (0)</a>
+          </div>
+          {% comment %} <div class="link">
+            <a href="{% url 'doc_alerts' %}" class="link4"><i class="fas fa-bell"></i> &nbsp; Alerts <span class="badge bg-danger">8</span></a>
+          </div> {% endcomment %}
+          <div class="link">
+            <a href="{% url 'dept_requests' %}" class="link8"><i class="fas fa-list"></i> &nbsp; Requests</a>
+          </div>
+          <div class="link">
+            <a href="{% url 'doc_profile' %}" class="link5"><i class="fas fa-user"></i> &nbsp; Profile</a>
+          </div>
+          {% comment %} <div class="link">
+            <span class="linkHead" onclick="drop_menu(this, event)" id="reportsBtn"><i class="fas fa-file-text"></i> &nbsp; Reports <i class="fas fa-angle-down"></i><i class="fas fa-angle-up"></i></span>
+            <div class="dp_menu">
+              <a href="/doc/report-patients" class="link6"><i class="fas fa-arrow-right"></i> &nbsp; Patients</a>
+              <a href="/doc/report-payments" class="link7"><i class="fas fa-arrow-right"></i> &nbsp; Payments</a>
+            </div>
+          </div> {% endcomment %}
+          <div class="link">
+            <a href="{% url 'procedure_dash' %}" class="bg-bblue"><i class="fas fa-heartbeat"></i> &nbsp; Procedures</a>
+          </div>
+          <div class="link">
+            <a href="" id="sign_out_btn"><i class="fas fa-sign-out"></i> &nbsp; Sign Out</a>
+          </div>
+        </aside>
+        <div class="offcanvas offcanvas-start" id="menuCanvas">
+          <div class="offcanvas-header">
+            <h1 class="offcanvas-title text-ddark">Menu..</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="menu_div offcanvas-body bg-ddark"></div>
+        </div>
+        <div id="container">
+          {% block contents %}
+
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span>&copy; 2023 - Mwezai dispensary</span>
+      <span>All rights reserved</span>
+      <span>Design by fidon_developer</span>
+    </footer>
+    <script src="{% static 'js/jquery-3.6.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap-5.3.0/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/signout.js' %}"></script>
+    <script src="{% static 'js/doctor/master.js' %}"></script>
+    {% block scripts %}
+
+    {% endblock %}
+  </body>
+</html>

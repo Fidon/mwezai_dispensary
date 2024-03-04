@@ -1,0 +1,203 @@
+{% extends 'doctor/template.html' %}
+{% load doctor_filters %}
+{% load static %}
+{% block title %}
+  Requests | Doctor | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/doctor/requests.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <div class="requests">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#request_form">New request</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#pending_reqs">Pending requests ({{ count_pend }})</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#processed_reqs">Processed requests</a>
+      </li>
+    </ul>
+    <div class="tab_container shadow-sm rounded">
+      <div id="request_form" class="tab_div table-responsive">
+        <form id="new_request_form" action="{% url 'submit_dept_request' %}" autocomplete="off">
+          <span class="d-block w-100 float-start p-1 mb-2 mt-0 border-bottom border-bblue text-bblue"><i class="fas fa-pen-alt"></i> &nbsp; Lodge new request</span>
+          <div class="form-floating formsms"></div>
+          <div class="input-group">
+            <input type="text" class="form-control text-ttxt1" id="req_search" placeholder="Search.." />
+            <span class="input-group-text bg-ttxt1 text-white border"><i class="fas fa-search"></i></span>
+          </div>
+          <div class="form-floating tools_list" id="tools_div">
+            {% if supplies %}
+              {% for sup in supplies %}
+                <span id="id_{{ sup.id }}" class="cls_{{ sup.qty }}"><i class="fas fa-check-circle"></i>{{ sup.name }}: {{ sup.price|format_number }}@</span>
+              {% endfor %}
+            {% else %}
+              <div class="py-3 text-center">No tools/supplies available!</div>
+            {% endif %}
+            <div class="spinner" id="sch_spinner">
+              <i class="fas fa-spinner fa-pulse"></i>
+            </div>
+          </div>
+          <div class="form-floating">
+            <input type="text" class="form-control text-ttxt1" oninput="valqty(this)" id="req_qty" placeholder="r" required />
+            <label for="req_qty">Enter quantity<span id="sup_qty"></span></label>
+            <span id="err_qty" class="err"></span>
+          </div>
+          <div class="form-floating">
+            <textarea class="form-control text-ttxt1" id="req_describe" placeholder="p" style="min-height:130px"></textarea>
+            <label for="req_describe">Description (optional)</label>
+            <span></span>
+          </div>
+          <input type="hidden" id="supply_id" required />
+          <div class="form-floating submit">
+            <button type="submit" class="btn btn-lg btn-success" id="btn_request_btn">Send</button>
+          </div>
+        </form>
+      </div>
+      <div id="pending_reqs" class="tab_div table-responsive">
+        <table class="table table-hover">
+          <thead class="bg-ddark text-white text-center">
+            <tr>
+              <th>S/n</th>
+              <th>Request date</th>
+              <th>Name</th>
+              <th>Qty</th>
+              <th>Staff</th>
+            </tr>
+          </thead>
+          <tbody class="text-ttxt1">
+            {% if pending_requests %}
+              {% for req in pending_requests %}
+                <tr>
+                  <td class="align-middle text-center">{{ forloop.counter0|add:pending_requests.start_index }}</td>
+                  <td class="text-center align-middle text-nowrap">{{ req.req_date }}</td>
+                  <td class="text-start align-middle text-nowrap">{{ req.name }}</td>
+                  <td class="text-center align-middle">{{ req.qty }}</td>
+                  <td class="text-start align-middle text-nowrap">{{ req.staff }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center align-middle text-nowrap py-4">No pending requests yet!</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+        {% if pending_requests %}
+          <div class="paging_info d-block w-100 px-1 my-4">
+            <div class="d-inline-block w-auto mt-2">Page {{ pending_requests.number }} of {{ pending_requests.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end">
+              {% if pending_requests.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?d=pending&pen=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?d=pending&pen={{ pending_requests.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if pending_requests.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?d=pending&pen={{ pending_requests.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?d=pending&pen={{ pending_requests.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+      <div id="processed_reqs" class="tab_div table-responsive">
+        <table class="table table-hover">
+          <thead class="bg-ddark text-white text-center">
+            <tr>
+              <th>S/n</th>
+              <th>Req. date</th>
+              <th>Serve date</th>
+              <th>Name</th>
+              <th>Qty</th>
+              <th>Staff</th>
+            </tr>
+          </thead>
+          <tbody class="text-ttxt1">
+            {% if processed_requests %}
+              {% for req in processed_requests %}
+                <tr>
+                  <td class="align-middle text-center">{{ forloop.counter0|add:processed_requests.start_index }}</td>
+                  <td class="text-center align-middle text-nowrap">{{ req.req_date }}</td>
+                  <td class="text-center align-middle text-nowrap">{{ req.serv_date }}</td>
+                  <td class="text-start align-middle text-nowrap">{{ req.name }}</td>
+                  <td class="text-center align-middle">{{ req.qty }}</td>
+                  <td class="text-start align-middle text-nowrap">{{ req.staff }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6" class="text-center align-middle text-nowrap py-4">No processed requests yet!</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+        {% if processed_requests %}
+          <div class="paging_info d-block w-100 px-1 my-4">
+            <div class="d-inline-block w-auto mt-2">Page {{ processed_requests.number }} of {{ processed_requests.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end">
+              {% if processed_requests.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?d=processed&pro=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?d=processed&pro={{ processed_requests.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if processed_requests.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?d=processed&pro={{ processed_requests.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?d=processed&pro={{ processed_requests.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/doctor/requests.js' %}"></script>
+{% endblock %}

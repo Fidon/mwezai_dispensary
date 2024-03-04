@@ -1,0 +1,101 @@
+{% extends 'control/template.html' %}
+{% load reception_filters %}
+{% load static %}
+{% block title %}
+  Dashboard | Admin | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/control/dash.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <div class="nameDiv d-block float-start w-100 mb-2 shadow-sm">
+    <span id="welback" class="welcome d-block w-100 float-start text-ddark">Welcome back,</span>
+    <span id="date_time" class="time d-block w-100 float-start">Date & time</span>
+  </div>
+  <span class="head d-block float-start text-ddark">Overall summary & highlights</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">Total patients</span>
+      <span class="btn_number">{{ patients_total|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ patients_served|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ grand_total_revenue|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total staff</span>
+      <span class="btn_number">{{ staff_total|format_number }}</span>
+    </div>
+  </div>
+
+  <span class="head d-block float-start text-ddark">Today's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">New patients</span>
+      <span class="btn_number">{{ registered_today|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ served_patients_today|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ today_revenue|format_number }}</span>
+    </div>
+  </div>
+
+  <span class="head d-block float-start text-ddark">This weeks's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">New patients</span>
+      <span class="btn_number">{{ registered_week|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ served_patients_week|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ week_revenue|format_number }}</span>
+    </div>
+  </div>
+
+  <span class="head d-block float-start text-ddark">This months's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">New patients</span>
+      <span class="btn_number">{{ registered_month|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ served_patients_month|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ month_revenue|format_number }}</span>
+    </div>
+  </div>
+
+  <span class="head d-block float-start text-ddark">This year's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">New patients</span>
+      <span class="btn_number">{{ registered_year|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ served_patients_year|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ year_revenue|format_number }}</span>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/control/dash.js' %}"></script>
+{% endblock %}

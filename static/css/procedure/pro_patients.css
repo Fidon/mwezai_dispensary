@@ -1,0 +1,329 @@
+#navbar div.link a.link2 {
+    background-color: #F0F0F0;
+    color: #154360;
+}
+
+#container .patientlist,
+#container .results {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 5px;
+    color: #696969;
+}
+#container .patientlist a,
+#container .results a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+
+
+#container .results ul,
+#container .patientlist ul {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    background-color: rgba(212,212,255,.5);
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-size: 0;
+}
+#container .results ul li,
+#container .patientlist ul li {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 0;
+}
+#container .results ul li a,
+#container .patientlist ul li a {
+    display: block;
+    width: auto;
+    min-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    padding: 8px 15px;
+    
+}
+#container .tab_container {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 15px 10px;
+}
+#container .tab_container .tab_div {
+    display: none;
+    width: 100%;
+    float: left;
+    padding: 0;
+}
+#container .tab_container .tab_div:nth-child(1) {
+    display: block;
+}
+
+
+#container .tab_container .tab_div .results_div {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 5px 0;
+    max-height: 500px;
+    color: #696969;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#container .tab_container .tab_div .results_div .head {
+    display: block;
+    width: 100%;
+    float: left;
+    border: 1px solid rgba(66, 139, 202, .5);
+    padding: 8px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .4s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+#container .tab_container .tab_div .results_div .head i {
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    font-size: 16px;
+}
+#container .tab_container .tab_div .results_div .head:hover {
+    background-color: #428BCA;
+    color: #FFFFFF;
+}
+#container .tab_container .tab_div .results_div .details {
+    display: none;
+    width: 100%;
+    float: left;
+    min-height: 150px;
+    padding: 0;
+    margin: 0;
+    border-radius: 4px;
+    font-size: 15px;
+}
+
+
+#container .patientlist .tab_container .form-control:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#container .tab_container .pagination button {
+    color: #154360;
+    border: 1px solid rgba(66,139,202, 0.6);
+    cursor: pointer;
+}
+#container .tab_container .pagination button:hover,
+#container .tab_container .pagination button:focus {
+    background-color: #428BCA;
+    color: white;
+}
+#container .tab_container .pagination li.disabled,
+#container .tab_container .pagination li.disabled button {
+    cursor: not-allowed;
+}
+
+
+
+#proReportForm .info,
+#container .results .tab_container .tab_div .info {
+    display: block;
+    width: 100%;
+    float: left;
+}
+#proReportForm .info {
+    border-bottom: 1px solid rgba(66,139,202,0.4);
+    border-right: 1px solid rgba(66,139,202,0.4);
+}
+#proReportForm .info span,
+#container .results .tab_container .tab_div .info span {
+    width: 50%;
+    float: left;
+    padding: 3px 0;
+}
+#proReportForm .form-control,
+#proReportForm .form-select,
+#medicineModal .form-control,
+#medicineModal .form-select {
+    border: 1px solid rgba(66,139,202,0.4);
+}
+#medicineModal .w50 {
+    width: 49.25%;
+    float: left;
+}
+#medicineModal .mg2 {
+    margin-right: 1.5%;
+}
+#proReportForm .form-control:focus,
+#proReportForm .form-select:focus,
+#medicineModal .form-control:focus,
+#medicineModal .form-select:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+
+
+
+
+/* dropdowns for items in the service selected */
+#proReportForm .dropdownSelect {
+    background-color: #FFFFFF;
+    border: 1px solid rgba(66,139,202,0.4);
+    border-radius: 5px;
+    width: 100%;
+    float: left;
+    display: none;
+}
+#proReportForm .dropdownSelect .spn_head {
+    display: block;
+    width: 100%;
+    cursor: default;
+    font-size: 15px;
+    padding: 12px 14px;
+}
+#proReportForm .dropdownSelect .spn_head i {
+    float: right;
+    position: relative;
+    bottom: -1px;
+}
+#proReportForm .dropdownSelect .drop {
+    display: none;
+    float: left;
+    width: 100%;
+    padding: 0 14px;
+}
+#proReportForm .dropdownSelect .drop input {
+    display: block;
+    width: 100%;
+    height: 40px;
+    float: left;
+    padding: 0 7px;
+    margin-bottom: 5px;
+    outline: none;
+    border: 1px solid #428BCA;
+    border-radius: 5px;
+}
+#proReportForm .dropdownSelect .drop .contents {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 5px 0;
+    height: auto;
+    max-height: 250px;
+    overflow-y: auto;
+}
+#proReportForm .dropdownSelect .drop .contents .searching {
+    display: none;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    font-size: 15px;
+    color: #428BCA;
+}
+#proReportForm .dropdownSelect .drop .contents div {
+    display: block;
+    width: 100%;
+    float: left;
+    margin: 1px 0;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all .4s ease;
+}
+#proReportForm .dropdownSelect .drop .contents div span {
+    float: left;
+    padding: 5px;
+    margin: 0;
+    width: calc(100% - 65px);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#proReportForm .dropdownSelect .drop .contents div span.price {
+    float: right;
+    background-color: rgba(66, 139, 202, .8);
+    color: #FFFFFF;
+    width: auto;
+    max-width: 65px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#proReportForm .dropdownSelect .drop .contents div:hover {
+    background-color: rgba(212,212,255,.7);
+}
+#proReportForm .pay_list {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 2px 7px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+#proReportForm .pay_list div {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 0;
+    font-size: 15px;
+}
+#proReportForm .pay_list div:not(.totalcost) span {
+    display: inline-block;
+    width: auto;
+    padding: 2px 5px;
+    margin: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid rgba(105, 105, 105, .1);
+}
+#proReportForm .pay_list div span i {
+    color: #FF6767;
+    cursor: pointer;
+}
+
+
+
+/* responsive breakpoints */
+@media only screen and (max-width: 769px) {
+    #container .results .tab_container {
+        padding: 0;
+    }
+
+
+    #proReportForm .dropdownSelect .spn_head {
+        padding: 15px 14px;
+        font-size: 18px;
+    }
+    #proReportForm .dropdownSelect .drop {
+        padding: 0 5px;
+        font-size: 18px;
+    }
+    #proReportForm .dropdownSelect .drop input {
+        height: 60px;
+    }
+    #proReportForm .dropdownSelect .drop .contents {
+        max-height: 300px;
+    }
+    #proReportForm .dropdownSelect .drop .contents div span {
+        padding: 10px 5px;
+    }
+    #proReportForm .pay_list div {
+        font-size: 18px;
+    }
+    #proReportForm .pay_list div span i {
+        font-size: 20px;
+    }
+}
+

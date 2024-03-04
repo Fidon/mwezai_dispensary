@@ -1,0 +1,263 @@
+{% extends 'control/template.html' %}
+{% load pharmacy_filters %}
+{% load static %}
+{% block title %}
+  Pharmacy medicines | Admin | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/control/serv_pharmacy.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  {% if medicine_id %}
+    <div class="medicine_info">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#medicineInfo">Information</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#medicineUpdate">Update</a>
+        </li>
+        {% comment %} <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#medicineStats">Statistics</a>
+        </li> {% endcomment %}
+      </ul>
+
+      <div class="tab_container shadow-sm rounded">
+        <div id="medicineInfo" class="tab_div">
+          <h5>Medicine information..</h5><hr class="my-1" />
+          <div class="info">
+            <span class="d-block w-100"><b>Name:</b> &nbsp; {{ med.name }}</span>
+            <span><b>Formulation:</b> &nbsp; {{ med.form }}</span>
+            <span><b>Price:</b> &nbsp; {{ med.price|format_number }}@ TZS</span>
+            <span><b>Added on:</b> &nbsp; {{ med.addDate }}</span>
+            <span><b>Last edited on:</b> &nbsp; {{ med.lastEdit }}</span>
+            <span class="d-block w-100"><b>{{ med.edited }}:</b> &nbsp; {{ med.user }}</span>
+            <span><b>Stock:</b> &nbsp; {{ med.stock|format_number }}</span>
+            {% if med.expdays >= 1 and med.expdays <= 14 %}
+              <span data-bs-toggle="tooltip" title="{{ med.expdays|days }} days remaining"><b class="px-1 text-white bg-warning">Expiry date:</b> &nbsp; {{ med.expiryDate }}</span>
+            {% elif med.expdays <= 0 %}
+              <span data-bs-toggle="tooltip" title="Expired {{ med.expdays|days }} days ago"><b class="px-1 text-white bg-danger">Expiry date:</b> &nbsp; {{ med.expiryDate }}</span>
+            {% else %}
+              <span data-bs-toggle="tooltip" title="Expires in {{ med.expdays|days }} days"><b class="px-1 text-white bg-success">Expiry date:</b> &nbsp; {{ med.expiryDate }}</span>
+            {% endif %}
+            <span class="d-block w-100"><b>Description:</b> &nbsp; {{ med.describe|linebreaks }}</span>
+            <div class="d-block w-100 float-start py-3 mt-3">
+              <button type="button" class="btn btn-lg d-inline-block me-2 {{ med.hid }}" id="hide_med_btn">{{ med.hid_txt }}</button>
+              <button type="button" class="btn btn-lg btn-danger d-inline-block" data-bs-toggle="modal" data-bs-target="#confirmDelModel">Delete</button>
+            </div>
+          </div>
+        </div>
+        <div id="medicineUpdate" class="tab_div">
+          <h5>Update medicine information..</h5><hr class="my-1" />
+          <form class="" id="updateMedicineForm" autocomplete="off" action="{% url 'update_medicine' %}">
+            <div id="medupdate_formsms" class="formsms"></div>
+            <div class="form-floating">
+              <input type="text" class="form-control text-ttxt1" value="{{ med.name }}" id="up_name" name="names" placeholder="p" required />
+              <label for="up_name">Medicine name</label>
+              <span id="err_name"></span>
+            </div>
+            <div class="form-floating">
+              <span class="d-none" id="none_form">{{ med.form }}</span>
+              <select class="form-select text-ttxt1" id="up_formula" name="formula" required>
+                <option value="">--formulation--</option>
+                <option value="lab_use">--Labolatory use--</option>
+                <option value="Syrup">Syrup</option>
+                <option value="Tablet">Tablet</option>
+                <option value="Suppository">Suppository</option>
+                <option value="Pessary">Pessary</option>
+                <option value="Injection">Injection</option>
+                <option value="Others">Others</option>
+              </select>
+              <label class="form-label" for="up_formula">Medicine formulation</label>
+            </div>
+            <div class="form-floating">
+              <input type="text" class="form-control text-ttxt1" oninput="val_qty(this)" id="up_qty" placeholder="p" name="qty" />
+              <label for="up_qty">Enter new quantity (stock: {{ med.stock|format_number }})</label>
+              <span id="err_qty"></span>
+            </div>
+            <div class="form-floating">
+              <input type="text" class="form-control text-ttxt1" oninput="val_price(this)" id="up_price" placeholder="p" value="{{ med.price|price }}" name="price" required />
+              <label for="up_price">Medicine price</label>
+              <span id="err_price"></span>
+            </div>
+            <div class="form-floating">
+              <input type="date" class="form-control text-ttxt1" min="{% now 'Y-m-d' %}" id="up_expiry" placeholder="p" value="{{ med.exp }}" name="expiry" required />
+              <label for="up_expiry">Medicine expiry date</label>
+              <span id="err_expiry"></span>
+            </div>
+            <div class="form-floating">
+              <textarea class="form-control text-ttxt1" id="up_describe" placeholder="p" name="describe" style="min-height:130px">{{ med.describe|format_desc }}</textarea>
+              <label for="up_describe">Medicine description</label>
+              <span id="err_describe"></span>
+            </div>
+            <input type="hidden" value="{{ med.id }}" id="up_medicine_id" />
+            <div class="form-floating text-end pe-1">
+              <button type="submit" class="btn btn-lg btn-success d-inline-block" id="med_up_btn">Update</button>
+            </div>
+          </form>
+        </div>
+        <div id="medicineStats" class="tab_div">
+          <h5>Medicine stats..</h5>
+        </div>
+      </div>
+    </div>
+
+    {% comment %}modal to confirm deleting medicine{% endcomment %}
+    <div class="modal fade" id="confirmDelModel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-ttxt1">Confirm delete..</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body text-ttxt1">
+            Delete <b>{{ med.name }}</b> permanently..?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" id="med_del_btn">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="input-group w-100 float-start searchdiv">
+      <input type="text" class="form-control text-ttxt1" id="search_med_inpt" placeholder="Search medicines.." />
+      <a class="btn btn-bblue text-white ms-1" href="" title="Clear filters"><i class="fas fa-refresh"></i></a>
+      <button class="btn btn-success ms-1" type="button" data-bs-toggle="modal" data-bs-target="#newMedicineModal" title="Add new"><i class="fas fa-plus-circle"></i></button>
+    </div>
+    <div class="d-block w-100 float-start py-1 table-responsive">
+      <table class="table table-hover text-ttxt1" id="meds_table">
+        <thead>
+          <tr class="bg-bblue text-white">
+            <th>S/n</th>
+            <th>Reg date</th>
+            <th>Expiry date</th>
+            <th>Names</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Formulation</th>
+            <th>Status</th>
+            <th>Action</th>
+            <th>Expiry days</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    {% comment %}modal to add new medicine{% endcomment %}
+    <div class="modal fade" id="newMedicineModal">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <form class="modal-content" id="newMedicineForm" action="{% url 'new_medicine' %}" autocomplete="off">
+          <div class="modal-header">
+            <h5 class="modal-title text-ttxt1">Add new medicine</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="med_formsms" class="formsms"></div>
+            <div class="form-floating">
+              <input type="text" class="form-control text-ttxt1" id="inp_name" name="names" placeholder="p" required />
+              <label for="inp_name">Enter name</label>
+              <span id="err_name"></span>
+            </div>
+            <div class="form-floating">
+              <select class="form-select text-ttxt1" id="inp_formula" name="formula" required>
+                <option value="">Formulation</option>
+                <option value="lab_use">--Labolatory use--</option>
+                <option value="Syrup">Syrup</option>
+                <option value="Tablet">Tablet</option>
+                <option value="Suppository">Suppository</option>
+                <option value="Pessary">Pessary</option>
+                <option value="Injection">Injection</option>
+                <option value="Others">Others</option>
+              </select>
+              <label class="form-label" for="inp_formula">Select formulation</label>
+            </div>
+            <div class="form-floating">
+              <input type="text" class="form-control text-ttxt1" oninput="val_qty(this)" id="inp_qty" placeholder="p" name="qty" required />
+              <label for="inp_qty">Enter quantity</label>
+              <span id="err_qty"></span>
+            </div>
+            <div class="form-floating">
+              <input type="text" class="form-control text-ttxt1" oninput="val_price(this)" id="inp_price" placeholder="p" name="price" required />
+              <label for="inp_price">Enter price</label>
+              <span id="err_price"></span>
+            </div>
+            <div class="form-floating">
+              <input type="date" class="form-control text-ttxt1" min="{% now 'Y-m-d' %}" id="inp_expiry" placeholder="p" name="expiry" required />
+              <label for="inp_expiry">Enter expiry date</label>
+              <span id="err_expiry"></span>
+            </div>
+            <div class="form-floating">
+              <textarea class="form-control text-ttxt1" id="inp_describe" placeholder="p" name="describe" style="min-height:130px"></textarea>
+              <label for="inp_describe">Description (optional)</label>
+              <span id="err_describe"></span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-lg btn-danger d-inline-block me-3" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-lg btn-success d-inline-block" id="new_med_btn">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% comment %}modal to filter registration dates{% endcomment %}
+    <div class="modal fade" id="dateFilterModal">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-ttxt1">Reg. date range..</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-floating">
+              <input type="date" max="{% now 'Y-m-d' %}" class="form-control text-ttxt1" id="min_date" placeholder="d" />
+              <label for="min_date" class="text-ttxt1">Start date</label>
+            </div>
+            <div class="form-floating">
+              <input type="date" max="{% now 'Y-m-d' %}" class="form-control text-ttxt1" id="max_date" placeholder="d" />
+              <label for="max_date" class="text-ttxt1">End date</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-long-arrow-left"></i></button>
+            <button type="button" class="btn btn-bblue text-white" id="date_filter_clear"><i class="fas fa-refresh"></i></button>
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="date_filter_btn"><i class="fas fa-check-circle"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% comment %}modal to filter expiry dates{% endcomment %}
+    <div class="modal fade" id="expirydate_Modal">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-ttxt1">Expiry date range..</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-floating">
+              <input type="date" class="form-control text-ttxt1" id="expiry_start" placeholder="d" />
+              <label for="expiry_start" class="text-ttxt1">Start date</label>
+            </div>
+            <div class="form-floating">
+              <input type="date" class="form-control text-ttxt1" id="expiry_end" placeholder="d" />
+              <label for="expiry_end" class="text-ttxt1">End date</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-long-arrow-left"></i></button>
+            <button type="button" class="btn btn-bblue text-white" id="expiry_clear"><i class="fas fa-refresh"></i></button>
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="expiry_btn"><i class="fas fa-check-circle"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/control/serv_pharmacy.js' %}"></script>
+{% endblock %}

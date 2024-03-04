@@ -1,0 +1,75 @@
+{% extends 'ultra_sound/template.html' %}
+{% load reception_filters %}
+{% load static %}
+{% block title %}
+  Dashboard | Ultrasound | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/ultrasound/dash.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <div class="nameDiv d-block float-start w-100 mb-2 shadow-sm">
+    <span id="welback" class="welcome d-block w-100 float-start text-ddark">Ultrasound,<br />Welcome back,</span>
+    <span id="date_time" class="time d-block w-100 float-start">Date & time</span>
+  </div>
+  <span class="head d-block float-start text-ddark">Overall summary & highlights</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <a href="{% url 'usound_patients' %}">
+      <div>
+        <span class="btn_title">Waiting patients</span>
+        <span class="btn_number">{{ waiting_count|format_number }}</span>
+      </div>
+    </a>
+    <div>
+      <span class="btn_title">Pending tests</span>
+      <span class="btn_number">{{ pending_tests|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ served_patients|format_number }}</span>
+    </div>
+    {% comment %} <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ grand_cost_amount|format_number }}</span>
+    </div> {% endcomment %}
+  </div>
+
+  <span class="head d-block float-start text-ddark">Today's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ today_served|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ today_total|format_number }}</span>
+    </div>
+  </div>
+
+  {% comment %} <span class="head d-block float-start text-ddark">This week's summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ week_served|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ week_total|format_number }}</span>
+    </div>
+  </div>
+
+  <span class="head d-block float-start text-ddark">This months summary</span>
+  <div class="buttons d-block float-start w-100 shadow-sm">
+    <div>
+      <span class="btn_title">Patients served</span>
+      <span class="btn_number">{{ month_served|format_number }}</span>
+    </div>
+    <div>
+      <span class="btn_title">Total revenue</span>
+      <span class="btn_number">{{ month_total|format_number }}</span>
+    </div>
+  </div> {% endcomment %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/ultrasound/dash.js' %}"></script>
+{% endblock %}

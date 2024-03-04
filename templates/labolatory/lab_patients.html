@@ -1,0 +1,335 @@
+{% extends 'labolatory/template.html' %}
+{% load static %}
+{% block title %}
+  Patients | Labolatory | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/labolatory/lab_patients.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  {% if patient %}
+    <div class="results">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#pat_info">Information</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_testresults">Tests ({{ pending_tests_count }})</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_history">History</a>
+        </li>
+      </ul>
+
+      <div class="tab_container shadow-sm rounded">
+        <div id="pat_info" class="tab_div">
+          <h6>Patient information..</h6><hr class="my-1" />
+          <div class="info">
+            <span><b>Name:</b> &nbsp; {{ info.fullname }}</span>
+            <span class="w50"><b>Gender:</b> &nbsp; {{ info.gender }}</span>
+            <span class="w50"><b>Age:</b> &nbsp; {{ info.age }}</span>
+            <span class="w50"><b>Contact:</b> &nbsp; {{ info.contact }}</span>
+            <span class="w50"><b>Address:</b> &nbsp; {{ info.address }}</span>
+          </div>
+        </div>
+        <div id="pat_testresults" class="tab_div table-responsive">
+          <h6>Patient tests</h6><hr class="my-1" />
+          <div class="form-floating w-100" id="testTableSms"></div>
+          <table class="table table-hover" id="testsListTable">
+            <thead class="bg-ddark text-white">
+              <tr>
+                <th>Datetime</th>
+                <th>Name</th>
+                <th>Ordered by</th>
+              </tr>
+            </thead>
+            <tbody class="text-ttxt1">
+              {% if pending_tests_count %}
+                {% for test in pending_tests %}
+                  <tr id="{{ test.id }}" style="cursor:pointer;">
+                    <td class="align-middle text-nowrap">{{ test.dtime }}</td>
+                    <td class="align-middle text-nowrap testName">{{ test.name }}</td>
+                    <td class="align-middle text-nowrap">{{ test.order_by }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="blank_row">
+                  <td class="align-middle text-nowrap text-center py-4" colspan="3">No pending tests for this patient!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div id="pat_history" class="tab_div">
+          <h6>Patient history..</h6><hr class="my-1" />
+          <input type="hidden" value="{{ info.id }}" id="id_patient" />
+          <div class="results_div">
+            {% if pat_history %}
+              {% for hist in pat_history %}
+                <div class="d-block w-100 float-start mb-1">
+                  <span class="head" id="{{ hist }}">{{ hist }} <i class="fas fa-angle-down"></i></span>
+                  <div class="details mt-1 table-responsive"></div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="w-100 py-5 text-center">No any recent labolatory history found!</div>
+            {% endif %}
+          </div>
+
+          <div class="paging_info d-block w-100 float-start px-1 mt-5">
+            <div class="d-inline-block w-auto mt-2">Page {{ pat_history.number }} of {{ pat_history.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="waitlist_pagenation">
+              {% if pat_history.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?page=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?page={{ pat_history.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if pat_history.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?page={{ pat_history.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?page={{ pat_history.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% comment %}modal form to submit test results{% endcomment %}
+    <form class="modal fade text-ttxt1" id="testResultForm">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Submit test result..</h2>
+          </div>
+          <div class="modal-body">
+            <h6>Test results for: <span id="h6"></span></h6><hr class="mb-2" />
+            <div class="form-floating w-100" id="testFormSms"></div>
+            <div class="form-floating">
+              <textarea class="form-control text-ttxt1" id="test_micro" style="min-height:80px;" placeholder="tst"></textarea>
+              <label for="test_micro">Microscopic</label>
+            </div>
+            <div class="form-floating mt-1">
+              <textarea class="form-control text-ttxt1" id="test_macro" style="min-height:80px;" placeholder="tst"></textarea>
+              <label for="test_macro">Macroscopic</label>
+            </div>
+            <div class="table-responsive mt-2">
+              <table class="table table-borderless">
+                <thead class="bg-ttxt1 text-white">
+                  <tr>
+                    <th>Item</th>
+                    <th>Value</th>
+                    <th>Normal range</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input type="text" class="field1 form-control text-ttxt1" placeholder="Item name" required />
+                    </td>
+                    <td>
+                      <input type="text" class="field2 form-control text-ttxt1" placeholder="Value" required />
+                    </td>
+                    <td>
+                      <input type="text" class="field3 form-control text-ttxt1" placeholder="Normal range" required />
+                    </td>
+                  </tr>
+                  <tr id="row_btn">
+                    <td colspan="3">
+                      <button type="button" class="btn btn-ttxt1 text-white"><i class="fas fa-plus-circle"></i> Add</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="form-floating">
+              <textarea class="form-control text-ttxt1" id="test_report" style="min-height:100px;" placeholder="tst"></textarea>
+              <label for="test_report">Report..</label>
+            </div>
+            <input type="hidden" id="test_num" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-bs-dismiss="modal" class="btn btn-lg btn-danger" id="cancel_btn">Cancel</button>
+            <button type="submit" class="btn btn-lg btn-success" id="testSubmitBtn">Submit</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  {% else %}
+    <div class="patientlist">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#pat_waiting">Waiting patients ({{ lab_wait_count }})</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_allpatients">All patients</a>
+        </li>
+      </ul>
+      <div class="tab_container shadow-sm rounded">
+        <div id="pat_waiting" class="tab_div table-responsive">
+          <div class="input-group my-2">
+            <input type="text" class="form-control text-ttxt1" placeholder="Search" id="search_waiting" autocomplete="off" />
+            <button class="btn btn-ddark ms-1" type="button"><i class="fas fa-search"></i></button>
+            <button class="btn btn-success ms-1 reload_table" type="button"><i class="fas fa-refresh"></i></button>
+          </div>
+          <table class="table">
+            <thead class="bg-ddark text-white">
+              <tr>
+                <th>S/n</th>
+                <th>Patient Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody class="text-ttxt1">
+              {% if patients_waiting %}
+                {% for pat in patients_waiting %}
+                  <tr onclick="move_to_page('{{ pat.fileNumber }}')" style="cursor:pointer;">
+                    <td class="align-middle text-nowrap">{{ forloop.counter0|add:patients_waiting.start_index }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.fullname }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.gender }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.age }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.contact }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center py-3">No waiting patients found!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+          <div class="paging_info d-block w-100 px-1 my-4">
+            <div class="d-inline-block w-auto mt-2">Page {{ patients_waiting.number }} of {{ patients_waiting.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="waitlist_pagenation">
+              {% if patients_waiting.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if patients_waiting.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+        <div id="pat_allpatients" class="tab_div table-responsive">
+          <div class="input-group my-2">
+            <input type="text" class="form-control text-ttxt1" placeholder="Search" id="search_allpatients" autocomplete="off" />
+            <button class="btn btn-ddark ms-1" type="button"><i class="fas fa-search"></i></button>
+            <button class="btn btn-success ms-1 reload_table" type="button"><i class="fas fa-refresh"></i></button>
+          </div>
+          <table class="table">
+            <thead class="bg-ddark text-white">
+              <tr>
+                <th>S/n</th>
+                <th>Patient Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody class="text-ttxt1">
+              {% if patients_all %}
+                {% for pat in patients_all %}
+                  <tr onclick="move_to_page('{{ pat.fileNumber }}')" style="cursor:pointer;">
+                    <td class="align-middle text-nowrap">{{ forloop.counter0|add:patients_all.start_index }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.fullname }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.gender }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.age }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.contact }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center py-3">No patients found!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+          <div class="paging_info d-block w-100 px-1 my-4">
+            <div class="d-inline-block w-auto mt-2">Page {{ patients_all.number }} of {{ patients_all.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="waitlist_pagenation">
+              {% if patients_all.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if patients_all.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/labolatory/lab_patients.js' %}"></script>
+{% endblock %}

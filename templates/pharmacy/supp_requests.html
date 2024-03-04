@@ -1,0 +1,150 @@
+{% extends 'pharmacy/template.html' %}
+{% load static %}
+{% block title %}
+  Requests | Pharmacy | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/pharmacy/supp_requests.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <div class="requests">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#req_pending">Pending requests({{ count_pend }})</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#req_processed">Processed requests</a>
+      </li>
+    </ul>
+    <div class="tab_container shadow-sm rounded">
+      <div id="req_pending" class="tab_div table-responsive">
+        <div class="w-100" id="requests_formsms"></div>
+        <table class="table table-hover" id="pending_requests_table">
+          <thead class="bg-ddark text-white">
+            <tr>
+              <th>S/n</th>
+              <th>Request date</th>
+              <th>Department</th>
+              <th>Names</th>
+              <th>Qty</th>
+              <th>Description</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody class="text-ttxt1">
+            {% if pend_list %}
+              {% for pend in pend_list %}
+                <tr>
+                  <td class="align-middle">{{ forloop.counter }}</td>
+                  <td class="align-middle text-center">{{ pend.dates }}</td>
+                  <td class="align-middle">{{ pend.dept }}</td>
+                  <td class="align-middle">{{ pend.names }}</td>
+                  <td class="align-middle">{{ pend.qty }}</td>
+                  <td class="text-start align-top">{{ pend.describe|linebreaks }}</td>
+                  <td class="align-middle">
+                    <input type="checkbox" class="form-check-input" id="{{ pend.id }}" />
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td class="py-5 text-center" colspan="7">No pending requests!</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+        {% if pend_list %}
+          <div class="form-floating text-end mt-5 mb-2">
+            <button type="button" class="btn btn-lg btn-success d-inline-block" id="phar_requests_btn">Serve</button>
+            <button type="button" class="btn btn-lg btn-success d-none" id="pharma_load"><i class="fas fa-spinner fa-pulse"></i></button>
+          </div>
+        {% endif %}
+      </div>
+      <div id="req_processed" class="tab_div table-responsive">
+        <table class="table table-hover" id="processed_requests_table">
+          <thead class="bg-ddark text-white">
+            <tr>
+              <th>S/n</th>
+              <th>Serve date</th>
+              <th>Department</th>
+              <th>Names</th>
+              <th>Qty</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody class="text-ttxt1">
+            {% if comp_list %}
+              {% for comp in comp_list %}
+                <tr>
+                  <td class="align-middle">{{ forloop.counter0|add:comp_list.start_index }}</td>
+                  <td class="align-middle text-center">{{ comp.dates }}</td>
+                  <td class="align-middle">{{ comp.dept }}</td>
+                  <td class="align-middle">{{ comp.names }}</td>
+                  <td class="align-middle">{{ comp.qty }}</td>
+                  <td class="text-start align-top">{{ comp.describe|linebreaks }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td class="py-5 text-center" colspan="7">No processed requests!</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+        <div class="paging_info d-block w-100 px-1 my-4">
+          <div class="d-inline-block w-auto mt-2">Page {{ comp_list.number }} of {{ comp_list.paginator.num_pages }}</div>
+          <ul class="pagination d-inline-block w-auto float-end">
+            {% if comp_list.has_previous %}
+              <li class="page-item">
+                <button class="page-link" href="?page=1">First</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" href="?page={{ comp_list.previous_page_number }}">Prev</button>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <button class="page-link">First</button>
+              </li>
+              <li class="page-item disabled">
+                <button class="page-link">Prev</button>
+              </li>
+            {% endif %}
+            {% if comp_list.has_next %}
+              <li class="page-item">
+                <button class="page-link" href="?page={{ comp_list.next_page_number }}">Next</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" href="?page={{ comp_list.paginator.num_pages }}">Last</button>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <button class="page-link">Next</button>
+              </li>
+              <li class="page-item disabled">
+                <button class="page-link">Last</button>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="successResult" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header bg-success py-2">
+          <h4 class="modal-title text-white"><i class="fas fa-check-circle"></i> Success</h4>
+        </div>
+        <div class="modal-body text-ttxt1">All requests served successfully!</div>
+        <div class="modal-footer">
+          <a href="" class="btn btn-success"><i class="fas fa-long-arrow-left"></i> Requests</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/pharmacy/supp_requests.js' %}"></script>
+{% endblock %}

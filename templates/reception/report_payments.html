@@ -1,0 +1,16 @@
+{% extends 'reception/template.html' %}
+{% load static %}
+{% block title %}
+  Payments report | Reception | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/reception/report_pay.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <div class="d-block float-start w-100 text-center py-5">
+    <h1>Payments reports</h1>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/reception/report_pay.js' %}"></script>
+{% endblock %}

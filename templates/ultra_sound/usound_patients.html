@@ -1,0 +1,357 @@
+{% extends 'ultra_sound/template.html' %}
+{% load static %}
+{% block title %}
+  Patients | Ultrasound | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/ultrasound/usound_patients.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  {% if patient %}
+    <div class="results">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#pat_info">Information</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_testresults">Tests ({{ pending_count }})</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_history">History</a>
+        </li>
+      </ul>
+
+      <div class="tab_container shadow-sm rounded">
+        <div id="pat_info" class="tab_div">
+          <div class="info py-3 px-1">
+            <span><b>Name:</b> &nbsp; {{ info.fullname }}</span>
+            <span class="w50"><b>Gender:</b> &nbsp; {{ info.gender }}</span>
+            <span class="w50"><b>Age:</b> &nbsp; {{ info.age }}</span>
+            <span class="w50"><b>Contact:</b> &nbsp; {{ info.contact }}</span>
+            <span class="w50"><b>Address:</b> &nbsp; {{ info.address }}</span>
+            <span class="w50"><b>Religion:</b> &nbsp; {{ info.religion }}</span>
+            <span class="w50"><b>Marital status:</b> &nbsp; {{ info.marital }}</span>
+            <span class="w50"><b>Occupation:</b> &nbsp; {{ info.occupation }}</span>
+            <span class="mb-2 border-bottom"></span>
+
+            {% if info.vital_data %}
+              {% for vital in info.vital_data %}
+                <span class="w50 text-bblue"><b>Update date:</b> &nbsp; {{ vital.dates }}</span>
+                <span class="w50"><b>Blood pressure:</b> &nbsp; {{ vital.bp }}</span>
+                <span class="w50"><b>Heart rate:</b> &nbsp; {{ vital.hr }}</span>
+                <span class="w50"><b>Saturation:</b> &nbsp; {{ vital.sat }}</span>
+                <span class="w50"><b>Weight:</b> &nbsp; {{ vital.weight }}</span>
+                <span class="w50"><b>temperature:</b> &nbsp; {{ vital.temp|safe }}</span>
+                <span class="w-100 mt-1"></span>
+              {% endfor %}
+            {% endif %}
+
+            <span class="w-100 mb-2 border-bottom"></span>
+            <span><b>Comment:</b> &nbsp; {{ info.comment|linebreaks }}</span>
+          </div>
+        </div>
+        <div id="pat_testresults" class="tab_div py-3 px-1 table-responsive">
+          <div class="form-floating w-100" id="testTableSms"></div>
+          <table class="table table-hover" id="testsListTable">
+            <thead class="bg-ddark text-white">
+              <tr>
+                <th>orderDate</th>
+                <th>Name</th>
+                <th>Ordered by</th>
+              </tr>
+            </thead>
+            <tbody class="text-ttxt1">
+              {% if patient_tests %}
+                {% for test in patient_tests %}
+                  <tr id="{{ test.id }}" style="cursor:pointer;">
+                    <td class="align-middle text-nowrap">{{ test.dtime }}</td>
+                    <td class="align-middle text-nowrap name">{{ test.name }}</td>
+                    <td class="align-middle text-nowrap order">{{ test.order_by }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="3" class="align-middle text-center">No pending tests for this patient!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div id="pat_history" class="tab_div py-3 px-1">
+          <input type="hidden" value="{{ info.id }}" id="id_patient" />
+          <div class="results_div">
+            {% if pat_history %}
+              {% for hist in pat_history %}
+                <div class="d-block w-100 float-start mb-1">
+                  <span class="head" id="{{ hist }}">{{ hist }} <i class="fas fa-angle-down"></i></span>
+                  <div class="details mt-1 table-responsive"></div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="w-100 py-5 text-center">No any recent ultrasound history found!</div>
+            {% endif %}
+          </div>
+          <div class="paging_info d-block w-100 float-start px-1 mt-5">
+            <div class="d-inline-block w-auto mt-2">Page {{ pat_history.number }} of {{ pat_history.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="waitlist_pagenation">
+              {% if pat_history.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?page=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?page={{ pat_history.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if pat_history.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?page={{ pat_history.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?page={{ pat_history.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% comment %}modal form to submit test results{% endcomment %}
+    <form class="modal fade text-ttxt1" id="usoundResultForm" autocomplete="off">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Submit test result..</h2>
+          </div>
+          <div class="modal-body">
+            <div class="form-floating w-100" id="usoundErrsms"></div>
+            <div class="info">
+              <span class="w50"><b>Examination type:</b> &nbsp; <i id="type">exam type here</i></span>
+              <span class="w50"><b>File No:</b> &nbsp; <i>{{ info.fileNumber }}</i></span>
+              <span class="w50"><b>Ordered by:</b> &nbsp; <i id="ordered">Orderedby here</i></span>
+              <span class="w50"><b>Patient name:</b> &nbsp; <i>{{ info.fullname }}</i></span>
+              <span class="w50"><b>Reported by:</b> &nbsp; <i>{{ info.report_by }}</i></span>
+              <span class="w50"><b>Gender:</b> &nbsp; <i>{{ info.gender }}</i></span>
+              <span class="w50"><b>Age:</b> &nbsp; <i>{{ info.age }}</i></span>
+              <span class="w50"><b>Result date:</b> &nbsp; <i>{{ info.dtime }}</i></span>
+            </div>
+            <div class="table-responsive mt-2 d-block w-100">
+              <table class="table table-borderless">
+                <thead class="bg-ttxt1 text-white">
+                  <tr>
+                    <th>Item</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="form-floating">
+                        <input type="text" class="form-control text-ttxt1" placeholder="i" />
+                        <label class="text-ttxt1">Item name</label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-floating">
+                        <textarea class="form-control text-ttxt1" placeholder="v"></textarea>
+                        <label class="text-ttxt1">Value..</label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr id="btn_row">
+                    <td colspan="2">
+                      <button type="button" class="btn btn-ttxt1 text-white"><i class="fas fa-plus-circle"></i> Add</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="form-floating">
+              <textarea class="form-control text-ttxt1" id="usoundReport" style="min-height:100px;" placeholder="r"></textarea>
+              <label for="usoundReport">Report..</label>
+            </div>
+            <input type="hidden" id="usound_num" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-bs-dismiss="modal" class="btn btn-lg btn-danger" id="cancel_btn">Cancel</button>
+            <button type="submit" class="btn btn-lg btn-success" id="usound_sub_btn">Submit</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  {% else %}
+    <div class="patientlist">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#pat_waiting">Waiting patients ({{ wait_count }})</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#pat_allpatients">All patients</a>
+        </li>
+      </ul>
+      <div class="tab_container shadow-sm rounded">
+        <div id="pat_waiting" class="tab_div table-responsive">
+          <div class="input-group my-2">
+            <input type="text" class="form-control text-ttxt1" placeholder="Search" id="search_waiting" autocomplete="off" />
+            <button class="btn btn-ddark ms-1" type="button"><i class="fas fa-search"></i></button>
+            <button class="btn btn-success ms-1 reload_table" type="button"><i class="fas fa-refresh"></i></button>
+          </div>
+
+          <table class="table">
+            <thead class="bg-ddark text-white">
+              <tr>
+                <th>S/n</th>
+                <th>Patient Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody class="text-ttxt1">
+              {% if patients_waiting %}
+                {% for pat in patients_waiting %}
+                  <tr onclick="move_to_page('{{ pat.fileNumber }}')" style="cursor:pointer;">
+                    <td class="align-middle text-nowrap text-center">{{ forloop.counter0|add:patients_waiting.start_index }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.fullname }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.gender }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.age }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.contact }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center py-3">No waiting patients found!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+
+          <div class="paging_info d-block w-100 px-1 my-4">
+            <div class="d-inline-block w-auto mt-2">Page {{ patients_waiting.number }} of {{ patients_waiting.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="waitlist_pagenation">
+              {% if patients_waiting.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if patients_waiting.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=waiting&pw={{ patients_waiting.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+        <div id="pat_allpatients" class="tab_div table-responsive">
+          <div class="input-group my-2">
+            <input type="text" class="form-control text-ttxt1" placeholder="Search" id="search_allpatients" autocomplete="off" />
+            <button class="btn btn-ddark ms-1" type="button"><i class="fas fa-search"></i></button>
+            <button class="btn btn-success ms-1 reload_table" type="button"><i class="fas fa-refresh"></i></button>
+          </div>
+
+          <table class="table">
+            <thead class="bg-ddark text-white">
+              <tr>
+                <th>S/n</th>
+                <th>Patient Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody class="text-ttxt1">
+              {% if patients_all %}
+                {% for pat in patients_all %}
+                  <tr onclick="move_to_page('{{ pat.fileNumber }}')" style="cursor:pointer;">
+                    <td class="align-middle text-nowrap text-center">{{ forloop.counter0|add:patients_all.start_index }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.fullname }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.gender }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.age }}</td>
+                    <td class="align-middle text-nowrap">{{ pat.contact }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center py-3">No patients found!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+
+          <div class="paging_info d-block w-100 px-1 my-4">
+            <div class="d-inline-block w-auto mt-2">Page {{ patients_all.number }} of {{ patients_all.paginator.num_pages }}</div>
+            <ul class="pagination d-inline-block w-auto float-end" id="waitlist_pagenation">
+              {% if patients_all.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt=1">First</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.previous_page_number }}">Prev</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">First</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Prev</button>
+                </li>
+              {% endif %}
+              {% if patients_all.has_next %}
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.next_page_number }}">Next</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link" href="?div=patients&pt={{ patients_all.paginator.num_pages }}">Last</button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <button class="page-link">Next</button>
+                </li>
+                <li class="page-item disabled">
+                  <button class="page-link">Last</button>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/ultrasound/usound_patients.js' %}"></script>
+{% endblock %}

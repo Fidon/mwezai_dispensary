@@ -1,0 +1,162 @@
+#navbar div.link a.link8 {
+    background-color: #F0F0F0;
+    color: #154360;
+}
+
+
+#container .requests {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 0;
+    color: #696969;
+}
+#container .requests a {
+    color: inherit;
+    text-decoration: none;
+}
+#container .requests ul {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    background-color: rgba(212,212,255,.5);
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-size: 0;
+}
+#container .requests ul li {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 0;
+}
+#container .requests ul li a {
+    display: block;
+    width: auto;
+    min-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    padding: 8px 15px;
+    
+}
+#container .requests .tab_container {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 20px 15px;
+}
+#container .requests .tab_container .tab_div {
+    display: none;
+    width: 100%;
+    float: left;
+    padding: 0;
+}
+
+#container .requests .tab_container .tab_div form {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 10px;
+}
+#container .requests .tab_container .tab_div form .form-floating {
+    display: block;
+    width: 100%;
+    float: left;
+    margin-bottom: 5px;
+}
+#container .requests .tab_container .tab_div form .input-group {
+    margin-bottom: 5px;
+}
+#container .requests .tab_container .tab_div form .input-group input {
+    height: 55px;
+}
+#container .requests .tab_container .tab_div form .form-control:focus,
+#container .requests .tab_container .tab_div form .form-select:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#container .requests .tab_container .tab_div form .form-floating .err {
+    display: none;
+    width: 100%;
+    font-size: 12px;
+    padding-left: 5px;
+}
+#container .requests .tab_container .tab_div form .submit {
+    text-align: right;
+    padding: 8px;
+}
+#container .requests .tab_container .tab_div form .tools_list {
+    background-color: #FFFFFF;
+    color: #696969;
+    padding: 12px 8px;
+    border-radius: 3px;
+    height: auto;
+    max-height: 285px;
+    overflow-y: auto;
+}
+#container .requests .tab_container .tab_div form .tools_list span {
+    display: block;
+    width: 100%;
+    float: left;
+    border: 1px solid rgba(105, 105, 105, .2);
+    padding: 5px;
+    border-radius: 2px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#container .requests .tab_container .tab_div form .tools_list span:hover {
+    background-color: #428BCA;
+    color: #FFFFFF;
+}
+#container .requests .tab_container .tab_div form .tools_list span i {
+    color: #198754;
+    display: none;
+    margin-right: 3px;
+}
+#container .requests .tab_container .tab_div form .tools_list span:hover i {
+    color: #FFFFFF;
+}
+#container .requests .tab_container .tab_div form .tools_list .spinner {
+    display: none;
+    float: left;
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 20px;
+}
+#container .requests .tab_container .tab_div:nth-child(1) {
+    display: block;
+}
+
+
+#container .requests .tab_container .pagination button {
+    color: #154360;
+    border: 1px solid rgba(66,139,202, 0.6);
+    cursor: pointer;
+}
+#container .requests .tab_container .pagination button:hover,
+#container .requests .tab_container .pagination button:focus {
+    background-color: #428BCA;
+    color: white;
+}
+
+#container .requests .tab_container .pagination li.disabled,
+#container .requests .tab_container .pagination li.disabled button {
+    cursor: not-allowed;
+}
+
+
+@media only screen and (max-width: 769px) {
+    #container .requests .tab_container {
+        padding: 0;
+    }
+}

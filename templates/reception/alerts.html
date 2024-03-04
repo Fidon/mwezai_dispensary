@@ -1,0 +1,32 @@
+{% extends 'reception/template.html' %}
+{% load static %}
+{% block title %}
+  Alerts | Reception | Mwezai dispensary
+{% endblock %}
+{% block styles %}
+  <link href="{% static 'css/reception/alerts.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+  <div class="alerts shadow-sm rounded text-ttxt1">
+    <div class="card mb-2 shadow-sm">
+      <div class="card-header">
+        Ultrasound<i>1min ago</i>
+      </div>
+      <div class="card-body">
+        Patient returned <code>945835</code> Jackson Bernad Maganga<hr class="my-1" />Comment: Please re-allocate him to doctor consultation first.
+      </div>
+    </div>
+    <div class="card mb-2 shadow-sm">
+      <div class="card-header">
+        Admin<i>03/09/2023 13:48</i>
+      </div>
+      <div class="card-body">
+        New service added!<br />
+        Name: X-ray
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'js/reception/alerts.js' %}"></script>
+{% endblock %}
