@@ -346,14 +346,14 @@ def save_patient_services(request):
         patient_file = extract_patient_file(data)
         grand_total = calculate_grand_total(data)
         process_patient_data(data, request.user)
-        fail_status, failed_list, failed_amount = process_pending_tests(data)
+        process_pending_tests(data)
         update_patient_credit(get_patient(patient_file), grand_total)
         response = {
             'success': True,
             'sms': 'Operation completed!',
-            'status': fail_status,
-            'failed_list': failed_list,
-            'amount': failed_amount
+            'status': False,
+            'failed_list': [],
+            'amount': 0.0
         }
         return JsonResponse(response)
 
@@ -402,24 +402,8 @@ def process_patient_data(data, user):
 
 def process_pending_tests(data):
     pending_tests = data[0].get('pending', [])
-    fail_status = False
-    failed_list = []
-    amount_remaining = 0.0
     for pen in pending_tests:
-        pen_test = Patient_service.objects.get(id=pen)
-        if pen_test.md_qty:
-            exp_days = expiry_days(pen_test.service.expiryDate.strftime('%d-%b-%Y'))
-            if (pen_test.service.qty >= pen_test.md_qty) and (exp_days > 0):
-                new_qty = pen_test.service.qty - pen_test.md_qty
-                Dept_service.objects.filter(id=pen_test.service_id).update(qty=new_qty)
-                update_pending_test_status(pen)
-            else:
-                fail_status = True
-                amount_remaining += (float(pen_test.md_qty) * float(pen_test.costEach))
-                failed_list.append(int(pen))
-        else:
-            update_pending_test_status(pen)
-    return fail_status, failed_list, amount_remaining
+        update_pending_test_status(pen)
 
 def get_patient(patient_file):
     return Patient.objects.get(fileNumber=patient_file)
@@ -469,30 +453,23 @@ def create_patient_service(patient, service_obj, cost_each, doctor_obj, md_qty, 
             md_qty=md_qty,
             md_formulation=md_form,
             md_dosage=md_dosage,
-            pay_status="cash",
             comp_status="waiting",
             registrar=user
         )
-        patient_service.save()
     else:
-        med_update = Dept_service.objects.get(id=service_obj.id)
-        if int(md_qty) <= med_update.qty:
-            med_update.qty -= int(md_qty)
-            med_update.save()
-            patient_service = Patient_service(
-                patient=patient,
-                service=service_obj,
-                costEach=float(cost_each),
-                doctor_service=doctor_obj is not None,
-                doctor=doctor_obj,
-                md_qty=int(md_qty),
-                md_formulation=md_form,
-                md_dosage=md_dosage,
-                pay_status="cash",
-                comp_status="waiting",
-                registrar=user
-            )
-            patient_service.save()
+        patient_service = Patient_service(
+            patient=patient,
+            service=service_obj,
+            costEach=float(cost_each),
+            doctor_service=doctor_obj is not None,
+            doctor=doctor_obj,
+            md_qty=int(md_qty),
+            md_formulation=md_form,
+            md_dosage=md_dosage,
+            comp_status="waiting",
+            registrar=user
+        )
+    patient_service.save()
 
 def update_patient_last_visit(patient):
     current_datetime = datetime.now(my_timezone).strftime("%Y-%m-%d %H:%M:%S.%f")
@@ -501,7 +478,6 @@ def update_patient_last_visit(patient):
 def update_pending_test_status(pen):
     pen_test = Patient_service.objects.get(id=pen)
     pen_test.comp_status = 'waiting'
-    pen_test.service_date = datetime.now(my_timezone).strftime("%Y-%m-%d %H:%M:%S.%f")
     pen_test.save()
 
 def update_patient_credit(patient, grand_total):
