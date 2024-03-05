@@ -203,10 +203,208 @@ def user_information (request, fr, us):
 @login_required
 @dept_required(('7'))
 def patients_logs (request, p=None):
-    context = {
-        'patient': p
-    }
-    return render(request, "control/patients.html", context)
+    if request.method == 'POST' and p is None:
+        my_timezone = EA_TIMEZONE()
+        draw = int(request.POST.get('draw', 0))
+        start = int(request.POST.get('start', 0))
+        length = int(request.POST.get('length', 10))
+        search_value = request.POST.get('search[value]', '')
+        order_column_index = int(request.POST.get('order[0][column]', 0))
+        order_dir = request.POST.get('order[0][dir]', 'asc')
+
+        # Base queryset
+        unique_patient_ids = Patient_service.objects.filter(Q(comp_status='waiting') | Q(comp_status='complete') | Q(comp_status='returned')).values('patient_id').distinct()
+        queryset = Patient_service.objects.filter(patient_id__in=unique_patient_ids)
+
+
+        # Date range filtering
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        format_string = "%Y-%m-%d %H:%M:%S.%f"
+        date_range_filters = Q()
+        if start_date:
+            start_date = datetime.strptime(start_date, format_string).astimezone(my_timezone)
+            date_range_filters |= Q(service_date__gte=start_date)
+        if end_date:
+            end_date = datetime.strptime(end_date, format_string).astimezone(my_timezone)
+            date_range_filters |= Q(service_date__lte=end_date)
+
+        if date_range_filters:
+            queryset = queryset.filter(date_range_filters)
+
+        # Base data from queryset
+        base_data = []
+        patient_ids = set()
+        for patient in queryset:
+            if patient.patient_id not in patient_ids:
+                patient_ids.add(patient.patient_id)
+                
+                amount_query = Patient_service.objects.filter(patient_id=patient.patient_id).annotate(sum_amount=ExpressionWrapper(Case(When(md_qty__isnull=False, then=F('costEach') * F('md_qty')), default=F('costEach'), output_field=FloatField()), output_field=FloatField()))
+
+                if date_range_filters:
+                    amount_query = amount_query.filter(date_range_filters)
+
+                amount = amount_query.aggregate(total_amount=Sum('sum_amount'))['total_amount']
+
+                data_dict = {
+                    'id': patient.patient_id,
+                    'regdate': patient.patient.regDate,
+                    'names': patient.patient.fullname,
+                    'gender': patient.patient.gender,
+                    'amount': amount if amount else 0.0,
+                }
+                base_data.append(data_dict)
+
+        
+        # Total records before filtering
+        total_records = len(base_data)
+
+        # Define a mapping from DataTables column index to the corresponding model field
+        column_mapping = {
+            0: 'id',
+            1: 'regdate',
+            2: 'names',
+            3: 'gender',
+            4: 'amount'
+        }
+
+        # Apply sorting
+        order_column_name = column_mapping.get(order_column_index, 'names')
+        if order_dir == 'asc':
+            base_data = sorted(base_data, key=lambda x: x[order_column_name], reverse=False)
+        else:
+            base_data = sorted(base_data, key=lambda x: x[order_column_name], reverse=True)
+
+        # Apply individual column filtering
+        for i in range(len(column_mapping)):
+            column_search = request.POST.get(f'columns[{i}][search][value]', '')
+            if column_search:
+                column_field = column_mapping.get(i)
+                if column_field:
+                    filtered_base_data = []
+                    for item in base_data:
+                        column_value = str(item.get(column_field, '')).lower()
+
+                        if column_field == 'amount':
+                            if column_search.startswith('-') and column_search[1:].isdigit():
+                                max_value = int(column_search[1:])
+                                item_value = float(column_value) if column_value else 0.0
+                                if item_value <= max_value:
+                                    filtered_base_data.append(item)
+
+                            elif column_search.endswith('-') and column_search[:-1].isdigit():
+                                min_value = int(column_search[:-1])
+                                item_value = float(column_value) if column_value else 0.0
+                                if item_value >= min_value:
+                                    filtered_base_data.append(item)
+
+                            elif column_search.isdigit():
+                                target_value = float(column_search.replace(',', ''))
+                                item_value = float(column_value) if column_value else 0.0
+                                if item_value == target_value:
+                                    filtered_base_data.append(item)
+                        if column_field == 'gender':
+                            if column_search.lower() == column_value:
+                                filtered_base_data.append(item)
+                        else:
+                            if column_search.lower() in column_value:
+                                filtered_base_data.append(item)
+
+                    base_data = filtered_base_data
+
+        # Apply global search
+        if search_value:
+            base_data = [item for item in base_data if any(str(value).lower().find(search_value.lower()) != -1 for value in item.values())]
+
+        grand_amount = sum(item['amount'] for item in base_data)
+        
+        # Calculate the total number of records after filtering
+        records_filtered = len(base_data)
+
+        # Apply pagination
+        base_data = base_data[start:start + length]
+
+        # Calculate row_count based on current page and length
+        page_number = start // length + 1
+        row_count_start = (page_number - 1) * length + 1
+
+
+        # Final data to be returned to ajax call
+        final_data = []
+        for i, item in enumerate(base_data):
+            final_data.append({
+                'count': row_count_start + i,
+                'id': item.get('id'),
+                'regdate': item.get('regdate').strftime('%d-%b-%Y'),
+                'names': item.get('names'),
+                'gender': item.get('gender')[0],
+                'amount': '{:,.2f}'.format(item.get('amount')),
+                'action': ''
+            })
+
+        ajax_response = {
+            'draw': draw,
+            'recordsTotal': total_records,
+            'recordsFiltered': records_filtered,
+            'data': final_data,
+            'grand_totals': {'grand_amount': grand_amount}
+        }
+        return JsonResponse(ajax_response)
+    elif request.method == 'POST' and p is not None:
+        pat_services = Patient_service.objects.filter(patient_id=p).filter(Q(comp_status='complete') | Q(comp_status='waiting') | Q(comp_status='returned'))
+
+        # Date range filtering
+        startdate = request.POST.get('startdate', None)
+        enddate = request.POST.get('enddate', None)
+        format_string = "%Y-%m-%d %H:%M:%S.%f"
+        my_timezone = EA_TIMEZONE()
+
+        if startdate:
+            startdate = datetime.strptime(startdate, format_string).astimezone(my_timezone)
+        if enddate:
+            enddate = datetime.strptime(enddate, format_string).astimezone(my_timezone)
+
+        if startdate and enddate:
+            pat_services = pat_services.filter(service_date__range=(startdate, enddate))
+        elif startdate:
+            pat_services = pat_services.filter(service_date__gte=startdate)
+        elif enddate:
+            pat_services = pat_services.filter(service_date__lte=enddate)
+
+        print
+
+        # Base data from queryset
+        services_list = []
+        total_amount_paid = 0.0
+        for service in pat_services:
+            if service.service is None:
+                names = f"(Doctor) {service.doctor.full_name}"
+                costs = service.costEach
+            else:
+                if service.md_qty is None:
+                    names = f"({service.service.dept.name}) {service.service.name}"
+                    costs = service.costEach
+                else:
+                    names = f"({service.service.dept.name}) {service.service.name} - {service.md_formulation} x {service.md_qty}"
+                    costs = float(service.costEach * service.md_qty)
+
+            total_amount_paid += costs
+
+            services_list.append({
+                'id': int(service.id),
+                'dates': service.service_date.strftime('%d-%b-%Y %H:%M'),
+                'names': names,
+                'costs': '{:,.2f}'.format(costs),
+                'staff': service.registrar.full_name,
+                'status': service.comp_status.capitalize(),
+            })
+        services_list = sorted(services_list, key=lambda x: x['id'], reverse=True)
+        return JsonResponse({
+            'success': True,
+            'services': services_list,
+            'totalcost': '{:,.2f}'.format(total_amount_paid)
+        })
+    return render(request, "control/patients.html")
 
 
 # Render doctors page
@@ -1141,7 +1339,7 @@ def ad_details_reception(request, pat, act, reg):
             pat_services = Patient_service.objects.filter(patient_id=pat, registrar_id=reg).filter(Q(comp_status='complete') | Q(comp_status='waiting'))
 
 
-        # Date range filtering
+            # Date range filtering
             startdate = request.POST.get('mindate', None)
             enddate = request.POST.get('maxdate', None)
             # print(f"Tarehe: {startdate} -- {enddate}")
