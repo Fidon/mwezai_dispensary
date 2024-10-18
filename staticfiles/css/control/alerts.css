@@ -1,0 +1,60 @@
+#navbar div.link a.link8 {
+    background-color: #f0f0f0;
+    color: #154360;
+}
+
+
+#container .alerts {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 15px 10px;
+    font-size: 14px;
+}
+#container .alerts div.card-header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    background-color: rgba(212,212,255,1);
+}
+#container .alerts div.card-header i {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 8px;
+    display: block;
+    background-color: #F8F8F8;
+}
+#container .alerts div code {
+    display: inline-block;
+    padding: 0 5px;
+    background-color: #FFFFFF;
+    color: #154360;
+    font-weight: 900;
+    border: 1px solid #154360;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all .5s ease;
+}
+#container .alerts div code:hover {
+    background-color: #154360;
+    color: #FFFFFF;
+}
+
+
+
+
+/* responsive breakpoints */
+@media only screen and (max-width: 769px) {
+    #container .alerts {
+        padding: 5px 8px;
+        font-size: 17px;
+    }
+}
+
+@media only screen and (max-width: 449px) {
+    #container .alerts {
+        padding: 3px;
+    }
+}

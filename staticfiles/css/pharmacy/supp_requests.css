@@ -1,0 +1,141 @@
+#navbar div.link a.link6 {
+    background-color: #F0F0F0;
+    color: #154360;
+}
+
+#container .deptlist,
+#container .requests {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 5px;
+    color: #696969;
+}
+#container .deptlist a,
+#container .requests a {
+    color: inherit;
+    text-decoration: none;
+}
+#container .deptlist .patient {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all .4s ease;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+#container .deptlist .patient:hover {
+    background-color: rgba(66, 139, 202, .7);
+    color: #FFFFFF;
+}
+
+
+
+
+#container .requests {
+    padding: 0;
+}
+#container .requests ul {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    background-color: rgba(212,212,255,.5);
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-size: 0;
+}
+#container .requests ul li {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 0;
+}
+#container .requests ul li a {
+    display: block;
+    width: auto;
+    min-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    padding: 8px 15px;
+    
+}
+#container .requests .tab_container {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 20px 15px;
+}
+#container .requests .tab_container .tab_div {
+    display: none;
+    width: 100%;
+    float: left;
+    padding: 0;
+}
+#container .requests .tab_container .tab_div:nth-child(1) {
+    display: block;
+}
+
+
+#container .requests .tab_container .pagination button {
+    color: #154360;
+    border: 1px solid rgba(66,139,202, 0.6);
+    cursor: pointer;
+}
+#container .requests .tab_container .pagination button:hover,
+#container .requests .tab_container .pagination button:focus {
+    background-color: #428BCA;
+    color: white;
+}
+
+#container .requests .tab_container .pagination li.disabled,
+#container .requests .tab_container .pagination li.disabled button {
+    cursor: not-allowed;
+}
+
+
+#container .requests .tab_container .tab_div .info {
+    display: block;
+    width: 100%;
+    float: left;
+}
+#container .requests .tab_container .tab_div .info span {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 3px 0;
+}
+#container .requests .tab_container .tab_div .info span.w50 {
+    width: 50%;
+    display: inline-block;
+}
+#container .requests .tab_container .tab_div table {
+    text-align: center;
+}
+#container .requests .tab_container .tab_div table td:nth-child(2),
+#container .requests .tab_container .tab_div table td:nth-child(4) {
+    text-align: left;
+}
+#container .requests .tab_container .tab_div table td input {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid #428BCA;
+    position: relative;
+    cursor: pointer;
+    margin: 0 auto;
+    top: -3px;
+}
+#container .requests .tab_container .tab_div table td input:focus {
+    outline: none;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 2px rgba(66,139,202, 0.8);
+}
+

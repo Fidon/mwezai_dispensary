@@ -1,0 +1,30 @@
+@import "../bootstrap-5.3.0/scss/functions";
+@import "../bootstrap-5.3.0/scss/variables";
+@import "../bootstrap-5.3.0/scss/mixins";
+
+// New color variables
+$col_darkblue: #154360;
+$col_blue: #428BCA;
+$col_blight: #5BC0DE;
+$col_green: #60CE80;
+$col_bglight: #F0F0F0;
+$col_light: #F4F3EA;
+$col_text: #2D2D2D;
+$col_txt1: #696969;
+
+// Merge the maps
+$theme-colors:map-merge($theme-colors, (
+  "ddark": $col_darkblue,
+  "bblue": $col_blue,
+  "bluelight": $col_blight,
+  "ggreen": $col_green,
+  "bglight": $col_bglight,
+  "llight": $col_light,
+  "ttxt": $col_text,
+  "ttxt1": $col_txt1
+));
+
+
+// Include all of Bootstrap
+@import "../bootstrap-5.3.0/scss/bootstrap";
+

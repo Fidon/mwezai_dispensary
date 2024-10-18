@@ -1,0 +1,415 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../../fonts/roboto-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'robotobold';
+    src: url('../../fonts/roboto-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'robotolight';
+    src: url('../../fonts/roboto-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+body {
+    scroll-behavior: smooth;
+    background-image: url('../../imgs/Sprinkle.svg');
+    font-family: 'Roboto';
+    font-size: 15px;
+    margin: 0;
+    padding: 0;
+    animation: fadeInAnimation ease .8s;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;  
+}
+@keyframes fadeInAnimation {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+body * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+#main {
+    background-color: rgba(240,240,240,.9);
+    display: block;
+    float: left;
+    width: 100%;
+    min-height: 100vh;
+}
+#main header {
+    display: block;
+    width: 100%;
+    background-image: url('../../imgs/sprinkle_header.jpg');
+    padding: 10px 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+}
+#main header .divlogo {
+    float: left;
+    width: auto;
+    padding-left: 10px;
+}
+#main header .divlogo img {
+    width: 60px;
+    float: left;
+    margin-right: 7px;
+}
+#main header .divlogo span {
+    font-size: 26px;
+    float: left;
+    margin-top: 9px;
+}
+#main header .divuser {
+    float: right;
+    text-align: right;
+    width: auto;
+    padding-right: 10px;
+    margin-top: 10px;
+}
+#main header .divuser span {
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 50%;
+    padding-top: 5px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+#main header .divuser span.menu { display: none; }
+#main header .divuser span:hover {
+    background-color: #154360;
+    color: #FFFFFF;
+}
+#main header .divuser span div {
+    display: block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    position: absolute;
+    right: 13px;
+    top: 8px;
+}
+#main .main_wrapper::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+#main .main_wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    float: left;
+    margin-top: 82px;
+}
+
+#navbar {
+    float: left;
+    width: 200px;
+    min-height: 100vh;
+    padding: 1px 0;
+    padding-left: 10px;
+}
+#navbar div.link,
+#menuCanvas .menu_div div.link {
+    display: block;
+    width: 100%;
+    float: left;
+}
+#navbar div.link a,
+#navbar div.link span.linkHead,
+#menuCanvas .menu_div div.link a,
+#menuCanvas .menu_div div.link span.linkHead {
+    display: block;
+    width: 100%;
+    float: left;
+    color: #F4F3EA;
+    border: 1px solid rgba(21, 67, 96, .3);
+    border-right: none;
+    padding: 10px 0;
+    padding-left: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+#navbar div.link a span.badge,
+#menuCanvas .menu_div div.link a span.badge {
+    font-size: 11px;
+}
+#navbar div.link span.linkHead,
+#menuCanvas .menu_div div.link span.linkHead {
+    padding-right: 5px;
+}
+#navbar div.link a:hover,
+#navbar div.link span.linkHead:hover,
+#menuCanvas .menu_div div.link a:hover,
+#menuCanvas .menu_div div.link span.linkHead:hover {
+    background-color: #F0F0F0;
+    color: #154360;
+}
+#navbar div.link span i:nth-child(2),
+#navbar div.link span i:nth-child(3),
+#menuCanvas .menu_div div.link span i:nth-child(2),
+#menuCanvas .menu_div div.link span i:nth-child(3) {
+    float: right;
+    position: relative;
+    top: 4px;
+}
+#navbar div.link span i:nth-child(3),
+#menuCanvas .menu_div div.link span i:nth-child(3) {
+    display: none;
+}
+#navbar div.link div,
+#menuCanvas .menu_div div.link div {
+    display: none;
+    width: 100%;
+    float: left;
+    padding-left: 10px;
+}
+#navbar div.link div a,
+#menuCanvas .menu_div div.link div a {
+    padding: 7px 0 7px 5px;
+}
+#container {
+    float: left;
+    width: calc(100% - 200px);
+    height: auto;
+    min-height: 100vh;
+    padding: 5px 10px;
+}
+body footer {
+    background-color: #009179;
+    color: #FFFFFF;
+    width: 100%;
+    padding: 30px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+body footer span {
+    font-size: 14px;
+    display: inline-block;
+    margin: 0 10px;
+    text-align: center;
+}
+
+
+
+
+/* CUSTOM TOOLTIP */
+#container form .tooltiptext {
+    display: none;
+    width: auto;
+    max-width: 50%;
+    font-size: 12px;
+    background-color: #F76F73;
+    color: #FFFFFF;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 110%;
+    right: 5px;
+}
+#container form .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #F76F73 transparent transparent transparent;
+}
+
+
+/* dropdowns for items in the service selected */
+#container form .dropdownSelect {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+}
+#container form .dropdownSelect .spn_head {
+    display: block;
+    width: 100%;
+    cursor: default;
+    font-size: 15px;
+    padding: 12px 14px;
+}
+#container form .dropdownSelect .spn_head i {
+    float: right;
+    position: relative;
+    bottom: -1px;
+}
+#container form .dropdownSelect .drop {
+    display: none;
+    float: left;
+    width: 100%;
+    padding: 0 14px;
+}
+#container form .dropdownSelect .drop input {
+    display: block;
+    width: 100%;
+    height: 40px;
+    float: left;
+    padding: 0 7px;
+    margin-bottom: 5px;
+    outline: none;
+    border: 1px solid #428BCA;
+    border-radius: 5px;
+}
+#container form .dropdownSelect .drop input:focus {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#container form .dropdownSelect .drop .contents {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 5px 0;
+    height: auto;
+    max-height: 250px;
+    overflow-y: auto;
+}
+#container form .dropdownSelect .drop .contents div {
+    display: block;
+    width: 100%;
+    float: left;
+    margin: 1px 0;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all .4s ease;
+}
+#container form .dropdownSelect .drop .contents div span {
+    float: left;
+    padding: 5px;
+    margin: 0;
+    width: calc(100% - 65px);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#container form .dropdownSelect .drop .contents div span.price {
+    float: right;
+    background-color: rgba(66, 139, 202, .8);
+    color: #FFFFFF;
+    width: auto;
+    max-width: 65px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#container form .dropdownSelect .drop .contents div span.w73 { width: calc(100% - 27px); }
+#container form .dropdownSelect .drop .contents div span.w27 { max-width: 27px; }
+#container form .dropdownSelect .drop .contents div:hover {
+    background-color: rgba(212,212,255,.7);
+}
+
+
+
+
+
+
+
+/* responsive breakpoints */
+@media only screen and (max-width: 769px) {
+    #main header {
+        padding: 25px 0;
+    }
+    #main header .divuser {
+        padding-right: 0;
+        margin-top: 6px;
+    }
+    #main header .divuser span {
+        margin: 0 2px;
+        font-size: 24px;
+        padding-top: 1px;
+    }
+    #main header .divuser span div {
+        right: 12px;
+        top: 5px;
+    }
+    #main header .divuser span.menu { display: inline-block; }
+
+    #menuCanvas .menu_div div.link a,
+    #menuCanvas .menu_div div.link span.linkHead {
+        padding: 17px 10px;
+        font-size: 18px;
+    }
+    #menuCanvas .menu_div div.link div a {
+        padding: 12px;
+    }
+    #navbar div.link a span.badge,
+    #menuCanvas .menu_div div.link a span.badge {
+        font-size: 13px;
+    }
+
+    #main .main_wrapper {
+        flex-direction: column-reverse;
+        margin-top: 114px;
+    }
+    #navbar {
+        display: none;
+    }
+    #container {
+        width: 100%;
+        padding: 5px;
+    }
+
+
+
+    #container form .dropdownSelect .spn_head {
+        padding: 15px 14px;
+        font-size: 18px;
+    }
+    #container form .dropdownSelect .drop {
+        padding: 0 5px;
+        font-size: 18px;
+    }
+    #container form .dropdownSelect .drop input {
+        height: 60px;
+    }
+    #container form .dropdownSelect .drop .contents {
+        max-height: 300px;
+    }
+    #container form .dropdownSelect .drop .contents div span {
+        padding: 10px 5px;
+    }
+}
+
+@media only screen and (max-width: 449px) {
+    #main header .divlogo {
+        padding: 0;
+    }
+    #main header .divlogo img {
+        display: none;
+    }
+    #main header .divlogo span {
+        margin: 0;
+        padding: 3px 0 3px 10px;
+        font-size: 22px;
+        font-family: 'robotobold';
+    }
+    #main header .divuser {
+        margin-top: 0;
+    }
+    #main .main_wrapper {
+        margin-top: 90px;
+    }
+}

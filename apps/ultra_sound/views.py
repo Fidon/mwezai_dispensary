@@ -283,7 +283,7 @@ def submit_usoundResults(request):
             test_result.save()
             get_test.comp_status = 'complete'
             get_test.save()
-            last_visit = datetime.now(my_timezone).strftime("%Y-%m-%d %H:%M:%S.%f")
+            last_visit = datetime.now().replace(tzinfo=pytz.UTC)
             Patient.objects.filter(id=get_test.patient_id).update(lastVisit=last_visit)
 
             response_data = {'success': True, 'sms': 'Ultrasound results saved successfully!'}

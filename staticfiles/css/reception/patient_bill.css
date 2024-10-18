@@ -1,0 +1,77 @@
+#main {
+    background-color: #FFFFFF;
+    min-height: 100%;
+    print-color-adjust: economy;
+}
+#main header {
+    background-color: #FFFFFF;
+    width: 100%;
+    float: left;
+    padding: 10px 0;
+    position: static;
+    z-index: 1;
+    margin-bottom: 10px;
+    print-color-adjust: economy;
+}
+#main header .divlogo {
+    padding-left: 0;
+}
+#main header .divlogo img {
+    width: 50px;
+    margin-right: 5px;
+}
+#main header .divlogo span {
+    font-size: 23px;
+    margin-top: 7px;
+}
+
+
+#main .main_wrapper {
+    display: block;
+    margin-top: 0;
+    padding: 0;
+    print-color-adjust: economy;
+}
+#container {
+    width: 100%;
+    min-height: 100%;
+    padding: 3px 0;
+    background-color: #FFFFFF;
+    print-color-adjust: economy;
+}
+
+
+#container form {
+    padding: 0;
+    color: #2D2D2D;
+    background-color: #FFFFFF;
+    print-color-adjust: economy;
+}
+
+
+#container form .print_paid,
+#container form .print_unpaid {
+    display: block;
+    padding: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    color: #2D2D2D;
+    print-color-adjust: economy;
+}
+#container form .print_head {
+    display: block;
+}
+
+
+#main header .divuser,
+#navbar,
+body footer,
+#container .pagehead,
+#container form div.formsms,
+#container form .form-floating,
+#container form .pay_list,
+#container form .pending_bills,
+#container form .waiting_serv,
+#container form .print_hide {
+    display: none;
+}

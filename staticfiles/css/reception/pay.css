@@ -1,0 +1,217 @@
+#navbar div.link a.link3 {
+    background-color: #f0f0f0;
+    color: #154360;
+}
+
+#container .pagehead {
+    display: block;
+    padding: 15px 8px;
+    background-color: rgba(212,212,255,.5);
+    color: #428BCA;
+    border-radius: 4px;
+    font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+#container .pagehead a {
+    display: block;
+    position: absolute;
+    right: 5px;
+    top: 12px;
+    padding: 3px 10px;
+    background-color: #154360;
+    color: #FFFFFF;
+    border-radius: 5px;
+}
+#container form {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 8px;
+    color: #696969;
+}
+#container form .patientNumErr {
+    display: none;
+    width: 100%;
+    font-size: 13px;
+}
+#container form div.formsms,
+#container form div.formsms span {
+    display: block;
+    width: 100%;
+    float: left;
+    margin: 0;
+}
+#container form .form-floating,
+#dateFilterModal .form-floating {
+    display: block;
+    width: 100%;
+    float: left;
+    margin: 3px 0;
+    position: relative;
+    color: #696969;
+}
+#container form .w50 {
+    width: 49.25%;
+}
+#container form .mg2 {
+    margin-right: 1.5%;
+}
+#container form .input-group {
+    height: 45px;
+}
+#container form .form-control:focus,
+#container form .form-select:focus,
+#dateFilterModal .form-floating .form-control:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#container form .form-floating .err {
+    display: none;
+    width: 100%;
+    float: left;
+    font-size: 12px;
+    padding-left: 5px;
+}
+#container form .patientinfo {
+    display: block;
+    width: 100%;
+    float: left;
+    padding-bottom: 10px
+}
+#container form .patientinfo .info {
+    display: block;
+    width: 100%;
+    padding: 3px 5px;
+}
+#container form .patientinfo .info span {
+    width: 50%;
+    float: left;
+    padding: 1px 0;
+}
+#container form .pay_list,
+#container form .pending_bills,
+#container form .waiting_serv,
+#container form .print_paid,
+#container form .print_unpaid {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 2px 7px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+#container form .print_paid span,
+#container form .print_unpaid span {
+    display: block;
+    width: 100%;
+    float: left;
+    padding-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#container form .print_paid span i,
+#container form .print_unpaid span i{
+    float: right;
+}
+#container form .pay_list div,
+#container form .pending_bills div,
+#container form .waiting_serv div {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 0;
+    font-size: 15px;
+}
+#container form .pay_list div:not(.totalcost) span {
+    display: inline-block;
+    width: auto;
+    padding: 2px 5px;
+    margin: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid rgba(105, 105, 105, .3);
+}
+#container form .pay_list div span i,
+#container form .pending_bills div span i,
+#container form .waiting_serv div span i {
+    color: #FF6767;
+    cursor: pointer;
+}
+
+#container form .dropdownSelect {
+    margin: 5px 0;
+}
+
+#container form .formsms,
+#container form .dropdownSelect,
+#container form #inp_wrapper,
+#container form .print_head,
+#container form .print_paid,
+#container form .print_unpaid {
+    display: none;
+}
+
+#patients_pagination .pagination button,
+#vitals_pagination .pagination button {
+    color: #154360;
+    border: 1px solid rgba(66,139,202, 0.6);
+    cursor: pointer;
+}
+#patients_pagination .pagination button:hover,
+#patients_pagination .pagination button:focus,
+#vitals_pagination .pagination button:hover,
+#vitals_pagination .pagination button:focus {
+    background-color: #428BCA;
+    color: white;
+}
+
+#patients_pagination .pagination li.disabled,
+#patients_pagination .pagination li.disabled button,
+#vitals_pagination .pagination li.disabled,
+#vitals_pagination .pagination li.disabled button {
+    cursor: not-allowed;
+}
+
+
+
+/* responsive breakpoints */
+@media only screen and (max-width: 769px) {
+    #container form {
+        padding: 5px 8px;
+        font-size: 18px;
+        padding-bottom: 20px;
+    }
+    #container form .form-floating {
+        margin: 3px 0;
+        font-size: 18px;
+    }
+    #container form .dropdownSelect {
+        margin: 5px 0;
+    }
+    #container form .pay_list div,
+    #confirmPayModal .modal-body,
+    #medicineModal .modal-body {
+        font-size: 18px;
+    }
+    #container form .pay_list div span i {
+        font-size: 20px;
+    }
+}
+
+@media only screen and (max-width: 589px) {
+    #container form .patientinfo .info span {
+        display: block;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 449px) {
+    #container form {
+        padding: 3px;
+        padding-bottom: 20px;
+    }
+}

@@ -5,7 +5,6 @@ from django.urls import reverse
 from dateutil import relativedelta
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.cache import never_cache
-from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, FloatField, ExpressionWrapper, Case, When, Sum
 from django.db.models.functions import Lower
@@ -303,7 +302,7 @@ def patients_logs (request, p=None):
                                 item_value = float(column_value) if column_value else 0.0
                                 if item_value == target_value:
                                     filtered_base_data.append(item)
-                        if column_field == 'gender':
+                        elif column_field == 'gender':
                             if column_search.lower() == column_value:
                                 filtered_base_data.append(item)
                         else:

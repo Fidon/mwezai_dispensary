@@ -1,0 +1,95 @@
+#navbar div.link a.link1 {
+    background-color: #F0F0F0;
+    color: #154360;
+}
+
+
+#container .nameDiv {
+    padding: 35px 8px;
+    background-color: rgba(212,212,255,.5);
+    border-radius: 5px;
+}
+#container .nameDiv span.welcome {
+    font-size: 23px;
+}
+#container .nameDiv span.time {
+    color: transparent;
+    font-size: 14px;
+}
+
+#container span.head {
+    font-size: 14px;
+    text-align: left;
+    padding: 3px 0 3px 5px;
+    font-weight: bold;
+    border-bottom: 1px solid #154360;
+    margin: 0;
+    margin-left: 10px;
+    margin-right: 5px;
+    width: calc(100% - 15px);
+}
+#container .buttons {
+    padding: 15px 5px;
+    font-size: 0;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+#container .buttons div {
+    display: inline-block;
+    width: 120px;
+    margin: 0 8px;
+    padding: 10px 0;
+    background-color: #154360;
+    border-radius: 5px;
+    color: #FFFFFF;
+    cursor: default;
+    font-size: 14px;
+    text-align: center;
+    transition: all 0.6s ease;
+}
+#container .buttons div:hover {
+    background-color: #428BCA;
+}
+#container .buttons div span {
+    display: block;
+    width: auto;
+    margin: 0 auto;
+    user-select: none;
+}
+
+#container .buttons div span.btn_title {
+    margin-bottom: 15px;
+}
+
+
+
+
+
+/* responsive breakpoints */
+@media only screen and (max-width: 769px) {
+    #container .nameDiv {
+        padding: 30px 8px;
+    }
+    #container .nameDiv span.welcome {
+        font-size: 25px;
+    }
+    #container .nameDiv span.time {
+        font-size: 17px;
+    }
+    #container span.head {
+        font-size: 18px;
+        border-bottom: 2px solid #154360;
+    }
+    #container .buttons {
+        padding: 25px 5px;
+        padding-top: 10px;
+    }
+    #container .buttons div {
+        width: 140px;
+        margin: 0 5px;
+        padding: 20px 0;
+        font-size: 17px;
+    }
+}

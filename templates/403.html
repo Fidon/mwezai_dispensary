@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcat icon" href="{% static 'imgs/logo.png' %}" />
+    <title>Access denied|Mwezai dispensary</title>
+    <link href="{% static 'fontawesome-6.2.1/css/all.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'scss/custom.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/reception/master.css' %}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="main">
+      <header class="shadow-sm">
+        <div class="divlogo">
+          <a href="{% url 'authPage' %}"><img src="{% static 'imgs/logo.png' %}" /></a>
+          <a href="{% url 'authPage' %}"><span class="text-ddark fw-bold">Mwezai dispensary</span></a>
+        </div>
+      </header>
+      <div class="main_wrapper">
+        <div id="container" class="text-center py-5 my-5">
+          <span class="fs-1 fw-bold d-inline-block mb-2 text-ttxt1">Access denied</span><br />
+          <a href="{% url 'authPage' %}" class="btn btn-bblue text-white"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span>&copy; 2023 - Mwezai dispensary</span>
+      <span>All rights reserved</span>
+      <span>Design by fidon_developer</span>
+    </footer>
+    <script src="{% static 'js/jquery-3.6.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap-5.3.0/js/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

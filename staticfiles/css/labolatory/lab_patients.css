@@ -1,0 +1,174 @@
+#navbar div.link a.link2 {
+    background-color: #F0F0F0;
+    color: #154360;
+}
+
+#container .patientlist,
+#container .results {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 0;
+    color: #696969;
+}
+#container .patientlist a,
+#container .results a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+#container .results ul,
+#container .patientlist ul {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    background-color: rgba(212,212,255,.5);
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-size: 0;
+}
+#container .results ul li,
+#container .patientlist ul li {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 0;
+}
+#container .results ul li a,
+#container .patientlist ul li a {
+    display: block;
+    width: auto;
+    min-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    padding: 8px 15px;
+    
+}
+#container .tab_container {
+    display: block;
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 20px 15px;
+}
+#container .patientlist .tab_container {
+    padding: 5px 0;
+}
+#container .tab_container .tab_div {
+    display: none;
+    width: 100%;
+    float: left;
+    padding: 0;
+}
+#container .tab_container .tab_div:nth-child(1) {
+    display: block;
+}
+
+
+#container .tab_container .tab_div .results_div {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 5px 0;
+    max-height: 500px;
+    color: #696969;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#container .tab_container .tab_div .results_div .head {
+    display: block;
+    width: 100%;
+    float: left;
+    border: 1px solid rgba(66, 139, 202, .5);
+    padding: 8px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .4s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+#container .tab_container .tab_div .results_div .head i {
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    font-size: 16px;
+}
+#container .tab_container .tab_div .results_div .head:hover {
+    background-color: #428BCA;
+    color: #FFFFFF;
+}
+#container .tab_container .tab_div .results_div .details {
+    display: none;
+    width: 100%;
+    float: left;
+    min-height: 150px;
+    padding: 0;
+    margin: 0;
+    border-radius: 4px;
+    font-size: 15px;
+}
+
+
+
+#container .results .tab_container .tab_div .info {
+    display: block;
+    width: 100%;
+    float: left;
+}
+#container .results .tab_container .tab_div .info span {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 3px 0;
+}
+#container .results .tab_container .tab_div .info span.w50 {
+    width: 50%;
+    display: inline-block;
+}
+
+#testResultForm .form-control {
+    border: 1px solid rgba(66,139,202,0.4);
+}
+#testResultForm .form-control:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#testResultForm table td input {
+    min-width: 130px;
+}
+
+
+
+#container .patientlist .tab_container .form-control:focus {
+    border-color: #428BCA;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 7px rgba(66,139,202, 0.6);
+}
+#container .tab_container .pagination button {
+    color: #154360;
+    border: 1px solid rgba(66,139,202, 0.6);
+    cursor: pointer;
+}
+#container .tab_container .pagination button:hover,
+#container .tab_container .pagination button:focus {
+    background-color: #428BCA;
+    color: white;
+}
+#container .tab_container .pagination li.disabled,
+#container .tab_container .pagination li.disabled button {
+    cursor: not-allowed;
+}
+
+
+
+@media only screen and (max-width: 769px) {
+    #container .patientlist .tab_container {
+        padding: 0;
+    }
+}
